@@ -1,12 +1,12 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import CreateUserDto from '../dto/user.dto';
-import { RequestWithUser } from '../types/auth.type';
-import ControllerI from '../types/controller.type';
 import authMiddleware from '../middleware/auth.middleware';
 import validationMiddleware from '../middleware/validation.middleware';
-
 import UserService from '../services/user.service';
+import { RequestWithUser } from '../types/auth.type';
+import ControllerI from '../types/controller.type';
+import { UserI } from '../types/user.type';
 
 class UserController implements ControllerI {
   public path: string = '/users';
@@ -52,7 +52,7 @@ class UserController implements ControllerI {
   };
   
   private createUser = async (req: RequestWithUser, res: Response) => {
-    const user = await this.userService.createUser(req.body);
+    const user = await this.userService.createUser(req.body as UserI);
     res.status(201)
       .json(user);
   };
