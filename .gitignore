@@ -1,0 +1,8 @@
+client
+node_modules
+
+build
+dist
+lib
+.idea
+server/.env
