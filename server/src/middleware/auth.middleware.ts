@@ -16,25 +16,27 @@ const authMiddleware = asyncHandler(async (
 ) => {
   const { authorization } = req.headers;
   const isBearerToken = authorization?.startsWith('Bearer');
+
   if (!isBearerToken) {
     throw new NotAuthorizedException();
   }
   
-  let token;
+  const token = authorization?.split(' ')[1];
+
+  if (!token) {
+    throw new NotAuthorisationTokenException();
+  }
+
   try {
-    token = authorization?.split(' ')[1];
     const { id } = decode(token);
-    const user = await new UserService().getUserById(id);
+    const user = await new UserService()
+      .getUserById(id);
     user.password = undefined;
     req.user = user;
     next();
   } catch (err) {
     const error = err as Error;
     throw new HttpException(401, error.message);
-  }
-  
-  if (!token) {
-    throw new NotAuthorisationTokenException();
   }
 });
 

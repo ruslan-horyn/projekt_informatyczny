@@ -21,10 +21,13 @@ class RoleService {
     if (!id) {
       throw new RoleIdNotFindException(id);
     }
+
     const role = await this.model.findById(id);
+
     if (!role) {
       throw new RoleNotFind();
     }
+
     return role;
   }
   
@@ -36,10 +39,13 @@ class RoleService {
     if (!id) {
       throw new RoleIdNotFindException(id);
     }
-    const role = this.model.findByIdAndDelete(id);
+
+    const role = await this.model.findByIdAndDelete(id);
+
     if (!role) {
       throw new RoleNotFind();
     }
+
     return role;
   }
 }

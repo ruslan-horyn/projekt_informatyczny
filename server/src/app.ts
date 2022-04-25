@@ -5,8 +5,6 @@ import ControllerI from './types/controller.type';
 import errorMiddleware from './middleware/error.middleware';
 import loggerMiddleware from './middleware/logger.middleware';
 
-// TODO: make a Git Repo and push commits
-
 // TODO: start develop a employee, employeeAddress,
 //  employeeSocialPhone, social model and shames
 
@@ -49,6 +47,7 @@ class App {
   
   public listen() {
     this.app.listen(this.port, () => {
+      // eslint-disable-next-line no-console
       console.log(
         `App listening on the port ${this.port}`,
       );

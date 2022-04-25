@@ -18,6 +18,8 @@ async function startApp() {
 }
 
 startApp()
-  .catch((error) => {
-    console.log('startAppError', colors.red(error));
+  .catch((err) => {
+    const error = err as Error;
+    // eslint-disable-next-line no-console
+    console.log('startAppError', colors.red(error.message));
   });

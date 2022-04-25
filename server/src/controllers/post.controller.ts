@@ -50,6 +50,7 @@ class PostsController implements ControllerI {
   };
   
   createPost = async (req: Request, res: Response) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const post = await PostModel.create(...req.body);
     res.status(201)
       .send(post);
@@ -57,8 +58,10 @@ class PostsController implements ControllerI {
   
   modifyPost = async (req: Request, res: Response) => {
     const { id } = req.params;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { title, content, author } = req.body;
     const findPost = await PostModel.findByIdAndUpdate(id, {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       title, content, author,
     }, { new: true });
     

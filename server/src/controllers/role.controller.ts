@@ -5,6 +5,7 @@ import CreateRoleDto from '../dto/role.dto';
 import authMiddleware from '../middleware/auth.middleware';
 import validationMiddleware from '../middleware/validation.middleware';
 import RoleService from '../services/role.service';
+import { RoleI } from '../types/role.type';
 
 export class RoleController implements ControllerI {
   public readonly path = '/roles';
@@ -43,7 +44,7 @@ export class RoleController implements ControllerI {
   };
   
   public createRole = async (req: Request, res: Response) => {
-    const { name } = req.body;
+    const { name } = req.body as RoleI;
     const role = await this.roleService.createRole(name);
     res.send(role);
   };
