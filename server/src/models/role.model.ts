@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { RoleI } from '../types/role.type';
+import { RoleI } from '../types';
 
 const RoleSchema = new Schema({
   name: {
@@ -9,5 +9,4 @@ const RoleSchema = new Schema({
  
 }, { timestamps: true });
 
-const RoleModel = model<RoleI>('Role', RoleSchema);
-export default RoleModel;
+export const RoleModel = model<RoleI>('Role', RoleSchema);

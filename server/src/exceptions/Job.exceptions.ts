@@ -1,4 +1,4 @@
-import HttpException from './HttpException';
+import { HttpException } from './HttpException';
 
 export class JobIdNotFindException extends HttpException {
   constructor(id: string) {

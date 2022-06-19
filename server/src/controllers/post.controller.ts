@@ -2,13 +2,13 @@ import {
   NextFunction, Request, Response, Router,
 } from 'express';
 import asyncHandler from 'express-async-handler';
-import CreatePostDto from '../dto/post.dto';
-import { PostNotFoundException } from '../exceptions/Post.exceptions';
-import ControllerI from '../types/controller.type';
-import validationMiddleware from '../middleware/validation.middleware';
-import PostModel from '../models/post.model';
+import { CreatePostDto } from '../dto';
+import { PostNotFoundException } from '../exceptions';
+import { validationMiddleware } from '../middleware';
+import { PostModel } from '../models';
+import { ControllerI } from '../types';
 
-class PostsController implements ControllerI {
+export class PostsController implements ControllerI {
   public path = '/posts';
   
   public router = Router();
@@ -69,5 +69,3 @@ class PostsController implements ControllerI {
       .send(findPost);
   };
 }
-
-export default PostsController;

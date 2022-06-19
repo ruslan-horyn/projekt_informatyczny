@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import HttpException from '../exceptions/HttpException';
-import loggerMiddleware from './logger.middleware';
+import { HttpException } from '../exceptions';
+import { loggerMiddleware } from './logger.middleware';
 
-const errorMiddleware = (
+export const errorMiddleware = (
   error: HttpException,
   req: Request,
   res: Response,
@@ -20,5 +20,3 @@ const errorMiddleware = (
   loggerMiddleware(req, res, next);
   next(stack);
 };
-
-export default errorMiddleware;

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import App from './app';
 import connectDB from './config/connectDB';
 import controllers from './controllers';
-import validateEnv from './utils/validateEnv';
+import { validateEnv } from './utils';
 
 dotenv.config();
 validateEnv();

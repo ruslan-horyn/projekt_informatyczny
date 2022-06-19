@@ -2,9 +2,9 @@ import { Model } from 'mongoose';
 import {
   JobIdNotFindException,
   JobNotFind,
-} from '../exceptions/Job.exceptions';
-import JobModel from '../models/job.model';
-import { JobI } from '../types/job.type';
+} from '../exceptions';
+import { JobModel } from '../models';
+import { JobI } from '../types';
 
 class JobService {
   private readonly model: Model<JobI>;

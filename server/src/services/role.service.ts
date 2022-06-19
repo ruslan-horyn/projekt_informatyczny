@@ -2,11 +2,11 @@ import { Model } from 'mongoose';
 import {
   RoleIdNotFindException,
   RoleNotFind,
-} from '../exceptions/Role.exceptions';
-import { RoleI } from '../types/role.type';
-import RoleModel from '../models/role.model';
+} from '../exceptions';
+import { RoleModel } from '../models';
+import { RoleI } from '../types';
 
-class RoleService {
+export class RoleService {
   private readonly model: Model<RoleI>;
   
   constructor() {
@@ -49,5 +49,3 @@ class RoleService {
     return role;
   }
 }
-
-export default RoleService;

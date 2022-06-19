@@ -1,13 +1,14 @@
 import {
   UserIdIsIncorrectException,
   UserIsExistsException,
-  UserNotFoundException, UserPassIsInvalidException,
-} from '../exceptions/User.exceptions';
-import { UserI } from '../types/user.type';
-import UserModel from '../models/user.model';
-import { hashedPassword } from '../utils/password';
+  UserNotFoundException,
+  UserPassIsInvalidException,
+} from '../exceptions';
+import { UserModel } from '../models';
+import { UserI } from '../types';
+import { hashedPassword } from '../utils';
 
-class UserService {
+export class UserService {
   public async getAllUsers() {
     return UserModel.find()
       .select('-password');
@@ -15,25 +16,25 @@ class UserService {
   
   public async getUserByEmail(email: string) {
     const user = await UserModel.findOne({ email });
-
+    
     if (!user) {
       throw new UserNotFoundException();
     }
-
+    
     return user;
   }
-
+  
   public async getUserById(id: string) {
     if (!id) {
       throw new UserIdIsIncorrectException(id);
     }
-
+    
     const user = await UserModel.findById(id);
-
+    
     if (!user) {
       throw new UserNotFoundException();
     }
-
+    
     return user;
   }
   
@@ -43,7 +44,7 @@ class UserService {
     } = data;
     
     const user = await UserModel.findOne({ email });
-
+    
     if (user) {
       throw new UserIsExistsException(email);
     } else if (password !== confirm) {
@@ -51,7 +52,7 @@ class UserService {
     }
     
     const hashPassword = await hashedPassword(password);
-
+    
     return UserModel.create({
       ...rest,
       email,
@@ -63,15 +64,13 @@ class UserService {
     if (!id) {
       throw new UserIdIsIncorrectException(id);
     }
-
+    
     const user = await UserModel.findByIdAndDelete(id);
-
+    
     if (!user) {
       throw new UserNotFoundException();
     }
-
+    
     return user;
   }
 }
-
-export default UserService;

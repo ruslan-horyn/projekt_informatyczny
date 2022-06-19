@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import PostI from '../types/post.type';
+import { PostI } from '../types';
 
 const PostSchema = new Schema({
   author: {
@@ -16,6 +16,4 @@ const PostSchema = new Schema({
   },
 }, { timestamps: true });
 
-const PostModel = model<PostI>('Post', PostSchema);
-
-export default PostModel;
+export const PostModel = model<PostI>('Post', PostSchema);

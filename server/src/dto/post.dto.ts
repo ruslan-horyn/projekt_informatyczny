@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-class CreatePostDto {
+export class CreatePostDto {
   @IsString()
   // @ts-ignore
   public author: string;
@@ -13,5 +13,3 @@ class CreatePostDto {
   // @ts-ignore
   public title: string;
 }
-
-export default CreatePostDto;

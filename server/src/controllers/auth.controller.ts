@@ -1,16 +1,18 @@
 import { Request, Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import { LoginDto } from '../dto/auth.dto';
-import { EnterRequiredFieldException } from '../exceptions/Auth.exceptions';
-import { UserPassIsInvalidException } from '../exceptions/User.exceptions';
-import validationMiddleware from '../middleware/validation.middleware';
-import UserService from '../services/user.service';
-import { RequestWithLoginBody } from '../types/auth.type';
-import ControllerI from '../types/controller.type';
-import { generateToken } from '../utils/jwt';
-import { doPasswordsMatch } from '../utils/password';
+import { AuthDto } from '../dto';
+import {
+  EnterRequiredFieldException,
+  UserPassIsInvalidException,
+} from '../exceptions';
 
-class AuthController implements ControllerI {
+import { validationMiddleware } from '../middleware';
+import { UserService } from '../services';
+import { ControllerI, RequestWithLoginBodyI } from '../types';
+
+import { doPasswordsMatch, generateToken } from '../utils';
+
+export class AuthController implements ControllerI {
   public readonly path = '/auth';
   
   public readonly router = Router();
@@ -25,13 +27,13 @@ class AuthController implements ControllerI {
     this.router
       .post(
         `${this.path}/login`,
-        validationMiddleware(LoginDto),
+        validationMiddleware(AuthDto),
         asyncHandler(this.login),
       )
       .get(`${this.path}/logout`, asyncHandler(this.loggingOut));
   };
   
-  private login = async (req: RequestWithLoginBody, res: Response) => {
+  private login = async (req: RequestWithLoginBodyI, res: Response) => {
     const { email, password } = req.body;
     
     if (!email || !password) {
@@ -57,5 +59,3 @@ class AuthController implements ControllerI {
     res.send(200);
   };
 }
-
-export default AuthController;

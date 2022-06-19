@@ -19,14 +19,13 @@ const statusColor = (code: number| undefined): string => {
   return 'white';
 };
 
-const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const color = statusColor(res.statusCode);
-  const consoleColor = colors.bold[color] as Color;
-  // eslint-disable-next-line no-console
-  console.log(consoleColor(
-    `${req.method} ${res.statusCode} ${req.path}`,
-  ));
-  next();
-};
-
-export default loggerMiddleware;
+export const
+  loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const color = statusColor(res.statusCode);
+    const consoleColor = colors.bold[color] as Color;
+    // eslint-disable-next-line no-console
+    console.log(consoleColor(
+      `${req.method} ${res.statusCode} ${req.path}`,
+    ));
+    next();
+  };

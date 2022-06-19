@@ -1,11 +1,9 @@
 import { Request, Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import ControllerI from '../types/controller.type';
-import CreateRoleDto from '../dto/role.dto';
-import authMiddleware from '../middleware/auth.middleware';
-import validationMiddleware from '../middleware/validation.middleware';
-import RoleService from '../services/role.service';
-import { RoleI } from '../types/role.type';
+import { CreateRoleDto } from '../dto';
+import { authMiddleware, validationMiddleware } from '../middleware';
+import { RoleService } from '../services';
+import { ControllerI, RoleI } from '../types';
 
 export class RoleController implements ControllerI {
   public readonly path = '/roles';
@@ -16,20 +14,6 @@ export class RoleController implements ControllerI {
   
   constructor() {
     this.initializeRoutes();
-  }
-  
-  private initializeRoutes() {
-    this.router
-      .all(`${this.path}`, authMiddleware)
-      .all(`${this.path}/*`, authMiddleware)
-      .get(this.path, asyncHandler(this.getAllRoles))
-      .get(`${this.path}/:id`, asyncHandler(this.getRoleById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteRole))
-      .post(
-        this.path,
-        validationMiddleware(CreateRoleDto),
-        asyncHandler(this.createRole),
-      );
   }
   
   public getAllRoles = async (_req: Request, res: Response) => {
@@ -54,6 +38,18 @@ export class RoleController implements ControllerI {
     const role = await this.roleService.deleteRole(id);
     res.json({ message: 'success', role });
   };
+  
+  private initializeRoutes() {
+    this.router
+      .all(`${this.path}`, authMiddleware)
+      .all(`${this.path}/*`, authMiddleware)
+      .get(this.path, asyncHandler(this.getAllRoles))
+      .get(`${this.path}/:id`, asyncHandler(this.getRoleById))
+      .delete(`${this.path}/:id`, asyncHandler(this.deleteRole))
+      .post(
+        this.path,
+        validationMiddleware(CreateRoleDto),
+        asyncHandler(this.createRole),
+      );
+  }
 }
-
-export default RoleController;

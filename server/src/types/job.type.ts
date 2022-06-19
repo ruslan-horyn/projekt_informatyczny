@@ -1,10 +1,7 @@
-export interface JobI {
+import { AddressI } from './address.type';
+
+export interface JobI extends AddressI {
   name: string;
   description: string;
   phone: string;
-  location: string
-  zcode: string
-  street: string;
-  house: string;
-  local: string;
 }

@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { JobI } from '../types/job.type';
+import { JobI } from '../types';
 
 export const JobSchema = new Schema({
   name: { type: String, required: true },
@@ -14,5 +14,4 @@ export const JobSchema = new Schema({
   timestamps: true,
 });
 
-const JobModel = model<JobI>('Job', JobSchema);
-export default JobModel;
+export const JobModel = model<JobI>('Job', JobSchema);

@@ -3,9 +3,9 @@ import { validate, ValidationError } from 'class-validator';
 import {
   NextFunction, Request, RequestHandler, Response,
 } from 'express';
-import HttpException from '../exceptions/HttpException';
+import { HttpException } from '../exceptions';
 
-const validationMiddleware = (
+export const validationMiddleware = (
   type: ClassConstructor<object>,
   skipMissingProperties = false,
 ): RequestHandler => (req: Request, _res: Response, next: NextFunction) => {
@@ -27,5 +27,3 @@ const validationMiddleware = (
       throw new HttpException(400, error.message);
     });
 };
-
-export default validationMiddleware;

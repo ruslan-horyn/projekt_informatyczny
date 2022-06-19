@@ -1,6 +1,6 @@
 import { cleanEnv, port, str } from 'envalid';
 
-const validateEnv = (): void => {
+export const validateEnv = (): void => {
   cleanEnv(process.env, {
     PORT: port(),
     NODE_ENV: str(),
@@ -8,5 +8,3 @@ const validateEnv = (): void => {
     JWT_SECRET: str(),
   });
 };
-
-export default validateEnv;

@@ -1,4 +1,4 @@
-import HttpException from './HttpException';
+import { HttpException } from './HttpException';
 
 export class EnterRequiredFieldException extends HttpException {
   constructor() {
@@ -6,14 +6,8 @@ export class EnterRequiredFieldException extends HttpException {
   }
 }
 
-export class NotAuthorizedException extends HttpException {
-  constructor() {
-    super(401, 'Not authorized');
-  }
-}
-
 export class NotAuthorisationTokenException extends HttpException {
   constructor() {
-    super(401, 'Not authorisation token');
+    super(401, 'Not authorized or no token');
   }
 }

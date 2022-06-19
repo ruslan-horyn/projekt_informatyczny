@@ -1,14 +1,11 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import CreateUserDto from '../dto/user.dto';
-import authMiddleware from '../middleware/auth.middleware';
-import validationMiddleware from '../middleware/validation.middleware';
-import UserService from '../services/user.service';
-import { RequestWithUser } from '../types/auth.type';
-import ControllerI from '../types/controller.type';
-import { UserI } from '../types/user.type';
+import { CreateUserDto } from '../dto';
+import { authMiddleware, validationMiddleware } from '../middleware';
+import { UserService } from '../services';
+import { RequestWithUserI, ControllerI, UserI } from '../types';
 
-class UserController implements ControllerI {
+export class UserController implements ControllerI {
   public path: string = '/users';
   
   public router = Router();
@@ -33,29 +30,27 @@ class UserController implements ControllerI {
       );
   }
   
-  private getAllUsers = async (_req: RequestWithUser, res: Response) => {
+  private getAllUsers = async (_req: RequestWithUserI, res: Response) => {
     const users = await this.userService.getAllUsers();
     res.json(users);
   };
   
-  private getUserById = async (req: RequestWithUser, res: Response) => {
+  private getUserById = async (req: RequestWithUserI, res: Response) => {
     const { id } = req.params;
     const user = await this.userService.getUserById(id);
     res.json(user);
   };
   
-  private deleteUser = async (req: RequestWithUser, res: Response) => {
+  private deleteUser = async (req: RequestWithUserI, res: Response) => {
     const { id } = req.params;
     const user = await this.userService.deleteUser(id);
     res.status(200)
       .json({ message: 'User deleted successfully', user });
   };
   
-  private createUser = async (req: RequestWithUser, res: Response) => {
+  private createUser = async (req: RequestWithUserI, res: Response) => {
     const user = await this.userService.createUser(req.body as UserI);
     res.status(201)
       .json(user);
   };
 }
-
-export default UserController;

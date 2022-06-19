@@ -1,9 +1,6 @@
 import { IsString } from 'class-validator';
 
-class CreateRoleDto {
+export class CreateRoleDto {
   @IsString()
-  // @ts-ignore
-  public name: string;
+  declare public name: string;
 }
-
-export default CreateRoleDto;

@@ -1,9 +1,9 @@
-import express, { Application } from 'express';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import ControllerI from './types/controller.type';
-import errorMiddleware from './middleware/error.middleware';
-import loggerMiddleware from './middleware/logger.middleware';
+import cors from 'cors';
+import express, { Application } from 'express';
+import { loggerMiddleware, errorMiddleware } from './middleware';
+
+import { ControllerI } from './types';
 
 // TODO: start develop a employee, employeeAddress,
 //  employeeSocialPhone, social model and shames
@@ -27,7 +27,8 @@ class App {
   }
   
   private initializeMiddlewares() {
-    this.app.use(cors())
+    this.app
+      .use(cors())
       .use(express.json())
       .use(express.urlencoded({ extended: true }))
       .use(cookieParser())
