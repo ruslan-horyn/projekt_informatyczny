@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+
 import { HttpException } from '../exceptions';
 import { loggerMiddleware } from './logger.middleware';
 

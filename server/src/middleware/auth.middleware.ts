@@ -1,16 +1,16 @@
 import { NextFunction, Response } from 'express';
 import asyncHandler from 'express-async-handler';
-import {
-  NotAuthorisationTokenException,
-  HttpException,
-} from '../exceptions';
 
-import { RequestWithUserI } from '../types';
+import {
+  HttpException,
+  NotAuthorisationTokenException,
+} from '../exceptions';
 import { UserService } from '../services';
+import { RequestWithUser } from '../types';
 import { decode } from '../utils';
 
 export const authMiddleware = asyncHandler(async (
-  req: RequestWithUserI,
+  req: RequestWithUser,
   _res: Response,
   next: NextFunction,
 ) => {
@@ -21,7 +21,7 @@ export const authMiddleware = asyncHandler(async (
   if (!isBearerToken || !token) {
     throw new NotAuthorisationTokenException();
   }
-  
+
   try {
     const { id } = decode(token);
     const user = await new UserService()

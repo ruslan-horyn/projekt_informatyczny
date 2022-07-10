@@ -1,5 +1,6 @@
 import colors from 'colors';
 import dotenv from 'dotenv';
+
 import App from './app';
 import connectDB from './config/connectDB';
 import controllers from './controllers';

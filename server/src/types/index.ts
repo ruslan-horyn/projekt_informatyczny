@@ -1,5 +1,7 @@
+export * from './address.type';
 export * from './auth.type';
 export * from './controller.type';
+export * from './employee.type';
 export * from './job.type';
 export * from './jwt.type';
 export * from './post.type';

@@ -1,22 +1,23 @@
 import { Model } from 'mongoose';
+
 import {
   RoleIdNotFindException,
   RoleNotFind,
 } from '../exceptions';
 import { RoleModel } from '../models';
-import { RoleI } from '../types';
+import { Role } from '../types';
 
 export class RoleService {
-  private readonly model: Model<RoleI>;
-  
+  private readonly model: Model<Role>;
+
   constructor() {
     this.model = RoleModel;
   }
-  
+
   async getAllRoles() {
     return this.model.find();
   }
-  
+
   async getRoleById(id: string) {
     if (!id) {
       throw new RoleIdNotFindException(id);
@@ -30,11 +31,11 @@ export class RoleService {
 
     return role;
   }
-  
+
   async createRole(name: string) {
     return this.model.create({ name });
   }
-  
+
   async deleteRole(id: string) {
     if (!id) {
       throw new RoleIdNotFindException(id);

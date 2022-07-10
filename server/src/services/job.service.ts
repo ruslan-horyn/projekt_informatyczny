@@ -1,22 +1,23 @@
 import { Model } from 'mongoose';
+
 import {
   JobIdNotFindException,
   JobNotFind,
 } from '../exceptions';
 import { JobModel } from '../models';
-import { JobI } from '../types';
+import { Job } from '../types';
 
 class JobService {
-  private readonly model: Model<JobI>;
-  
+  private readonly model: Model<Job>;
+
   constructor() {
     this.model = JobModel;
   }
-  
+
   async getAllJobs() {
     return this.model.find();
   }
-  
+
   async getJobById(id: string) {
     if (!id) {
       throw new JobIdNotFindException(id);
@@ -30,11 +31,11 @@ class JobService {
 
     return job;
   }
-  
-  async createJob(job: JobI) {
+
+  async createJob(job: Job) {
     return this.model.create({ ...job });
   }
-  
+
   async deleteJob(id: string) {
     if (!id) {
       throw new JobIdNotFindException(id);
@@ -48,8 +49,8 @@ class JobService {
 
     return job;
   }
-  
-  async updateJob(id: string, job: JobI) {
+
+  async updateJob(id: string, job: Job) {
     if (!id) {
       throw new JobIdNotFindException(id);
     }

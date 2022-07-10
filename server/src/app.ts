@@ -1,9 +1,9 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
-import { loggerMiddleware, errorMiddleware } from './middleware';
 
-import { ControllerI } from './types';
+import { errorMiddleware, loggerMiddleware } from './middleware';
+import { Controller } from './types';
 
 // TODO: start develop a employee, employeeAddress,
 //  employeeSocialPhone, social model and shames
@@ -14,19 +14,19 @@ import { ControllerI } from './types';
 
 class App {
   public app: Application;
-  
+
   public port: number;
-  
-  constructor(controllers: ControllerI[], port: number) {
+
+  constructor(controllers: Controller[], port: number) {
     this.app = express();
     this.port = port;
-    
-    this.initializeMiddlewares();
+
+    this.initializeMiddleware();
     this.initializeControllers(controllers);
     this.initializeErrorHandling();
   }
-  
-  private initializeMiddlewares() {
+
+  private initializeMiddleware() {
     this.app
       .use(cors())
       .use(express.json())
@@ -35,17 +35,17 @@ class App {
       .use(express.static('static'))
       .use(loggerMiddleware);
   }
-  
-  private initializeControllers(controllers: ControllerI[]) {
+
+  private initializeControllers(controllers: Controller[]) {
     controllers.forEach((controller) => {
       this.app.use('/api', controller.router);
     });
   }
-  
+
   private initializeErrorHandling() {
     this.app.use(errorMiddleware);
   }
-  
+
   public listen() {
     this.app.listen(this.port, () => {
       // eslint-disable-next-line no-console

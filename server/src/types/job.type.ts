@@ -1,7 +1,10 @@
-import { AddressI } from './address.type';
+import { Address } from './address.type';
 
-export interface JobI extends AddressI {
+export interface Job{
   name: string;
   description: string;
   phone: string;
+}
+
+export interface JobWithAddress extends Job, Address {
 }
