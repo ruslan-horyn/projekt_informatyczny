@@ -11,6 +11,11 @@ export class EmployeeIdIsIncorrectException extends HttpException {
     super(404, `The employee id ${id} is incorrect`);
   }
 }
+export class EmployeeAddressNotFoundException extends HttpException {
+  constructor(id: unknown) {
+    super(404, `The address employee id ${id} not found`);
+  }
+}
 
 export class EmployeeNotFoundException extends HttpException {
   constructor() {

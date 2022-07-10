@@ -5,12 +5,10 @@ import express, { Application } from 'express';
 import { errorMiddleware, loggerMiddleware } from './middleware';
 import { Controller } from './types';
 
-// TODO: start develop a employee, employeeAddress,
-//  employeeSocialPhone, social model and shames
+// TODO: start develop a job, employee, employeeAddress, - done
+//  employeeSocialPhone, social model and shames - wont do
 
-// TODO: start develop a job, vacancy, vacancyType model and shames
-
-// TODO: start develop a employeeJob model and shames
+// TODO: start develop a, currency, vacancyType, vacancy,  model and shames
 
 class App {
   public app: Application;

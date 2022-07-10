@@ -54,7 +54,7 @@ export class JobController implements Controller {
 
   private updateJob = async (req: RequestWithUser, res: Response) => {
     const { id } = req.params;
-    const job = req.body as Job;
+    const job = req.body as JobWithAddress;
     const jobNew = await this.jobService.updateJob(id, job);
     res.json(jobNew);
   };

@@ -23,6 +23,7 @@ export class EmployeeController implements Controller {
     this.router
       .get(`${this.path}`, authMiddleware, asyncHandler(this.getAllEmployees))
       .get(`${this.path}/:id`, asyncHandler(this.getEmployeeById))
+      .get(`${this.path}/address/:id`, asyncHandler(this.getEmployeeAddress))
       .delete(`${this.path}/:id`, asyncHandler(this.deleteEmployee))
       .post(
         `${this.path}`,
@@ -44,6 +45,12 @@ export class EmployeeController implements Controller {
   private getEmployeeById = async (req: RequestWithUser, res: Response) => {
     const { id } = req.params;
     const employee = await this.employeeService.getEmployeeById(id);
+    res.json(employee);
+  };
+
+  private getEmployeeAddress = async (req: RequestWithUser, res: Response) => {
+    const { id } = req.params;
+    const employee = await this.employeeService.getEmployeeAddress(id);
     res.json(employee);
   };
 

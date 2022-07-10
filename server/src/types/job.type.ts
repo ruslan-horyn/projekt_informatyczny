@@ -1,6 +1,6 @@
 import { Address } from './address.type';
 
-export interface Job{
+export interface Job {
   name: string;
   description: string;
   phone: string;
