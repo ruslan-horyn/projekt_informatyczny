@@ -16,7 +16,7 @@ module.exports = {
     '!**/__mock__/**',
   ],
   moduleNameMapper: {
-    '\\.svg$': '<rootDir>/tests/__mocks__/svgrMock.ts',
+    '\\.svg$': '<rootDir>/tests/__mocks__/svgMock.ts',
     '\\.(png|svg|pdf|jpg|jpeg)$': '<rootDir>/tests/__mocks__/fileMock.js',
     '^.+\\.(css|less)$': 'identity-obj-proxy',
   },
@@ -25,8 +25,5 @@ module.exports = {
       tsConfig: './tsconfig.json',
     },
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(@sky-distribution/react-commons-ui)/)',
-  ],
   testRegex: '(/__tests__/.*|/tests/.*)\\.test\\.[jt]sx?$',
 };

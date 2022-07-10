@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "./.eslintrc-base.js"
+  ],
+  "plugins": ["simple-import-sort"],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": ".",
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "max-classes-per-file": "off",
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error"
+  }
+}
