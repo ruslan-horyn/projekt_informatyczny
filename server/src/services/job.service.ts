@@ -5,10 +5,10 @@ import {
   JobNotFind,
 } from '../exceptions';
 import { JobModel } from '../models';
-import { Job } from '../types';
+import { JobWithAddress } from '../types';
 
 class JobService {
-  private readonly model: Model<Job>;
+  private readonly model: Model<JobWithAddress>;
 
   constructor() {
     this.model = JobModel;
@@ -32,7 +32,7 @@ class JobService {
     return job;
   }
 
-  async createJob(job: Job) {
+  async createJob(job: JobWithAddress) {
     return this.model.create({ ...job });
   }
 
@@ -50,7 +50,7 @@ class JobService {
     return job;
   }
 
-  async updateJob(id: string, job: Job) {
+  async updateJob(id: string, job: JobWithAddress) {
     if (!id) {
       throw new JobIdNotFindException(id);
     }

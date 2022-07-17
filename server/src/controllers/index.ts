@@ -1,5 +1,6 @@
 import { Controller } from '../types';
 import { AuthController } from './auth.controller';
+import { CurrencyController } from './currency.controller';
 import { EmployeeController } from './employee.controller';
 import { JobController } from './job.controller';
 import { PostsController } from './post.controller';
@@ -13,6 +14,7 @@ const controllers: Controller[] = [
   new AuthController(),
   new JobController(),
   new EmployeeController(),
+  new CurrencyController(),
 ];
 
 export default controllers;
