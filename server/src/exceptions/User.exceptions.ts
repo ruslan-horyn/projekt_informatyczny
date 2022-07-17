@@ -7,7 +7,7 @@ export class UserIsExistsException extends HttpException {
 }
 
 export class UserIdIsIncorrectException extends HttpException {
-  constructor(id: unknown) {
+  constructor(id: string) {
     super(404, `The user id ${id} is incorrect`);
   }
 }

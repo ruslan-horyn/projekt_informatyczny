@@ -7,7 +7,7 @@ import { CreatePostDto } from '../dto';
 import { PostNotFoundException } from '../exceptions';
 import { validationMiddleware } from '../middleware';
 import { PostModel } from '../models';
-import { Controller } from '../types';
+import { Controller, Post } from '../types';
 
 export class PostsController implements Controller {
   public path = '/posts';
@@ -19,18 +19,19 @@ export class PostsController implements Controller {
   }
 
   public initializeRoutes() {
-    this.router.get(this.path, asyncHandler(this.getAllPosts));
-    this.router.get(`${this.path}/:id`, asyncHandler(this.getPostById));
-    this.router.post(
-      this.path,
-      validationMiddleware(CreatePostDto),
-      asyncHandler(this.createPost),
-    );
-    this.router.patch(
-      `${this.path}/:id`,
-      validationMiddleware(CreatePostDto, true),
-      asyncHandler(this.modifyPost),
-    );
+    this.router
+      .get(this.path, asyncHandler(this.getAllPosts))
+      .get(`${this.path}/:id`, asyncHandler(this.getPostById))
+      .post(
+        this.path,
+        validationMiddleware(CreatePostDto),
+        asyncHandler(this.createPost),
+      )
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(CreatePostDto, true),
+        asyncHandler(this.modifyPost),
+      );
   }
 
   private getAllPosts = async (_req: Request, res: Response) => {
@@ -54,7 +55,7 @@ export class PostsController implements Controller {
   };
 
   createPost = async (req: Request, res: Response) => {
-    const post = await PostModel.create(...req.body);
+    const post = await PostModel.create({ ...req.body });
     res.status(201)
       .send(post);
   };
@@ -62,9 +63,8 @@ export class PostsController implements Controller {
   modifyPost = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const { title, content, author } = req.body;
+    const { title, content, author } = req.body as Post;
     const findPost = await PostModel.findByIdAndUpdate(id, {
-
       title, content, author,
     }, { new: true });
 

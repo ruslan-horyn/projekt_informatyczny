@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 
 import { CreateCurrencyDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
-import { CurrencyService } from '../services/currency.service';
+import { CurrencyService } from '../services';
 import { Controller, Currency, RequestWithUser } from '../types';
 
 export class CurrencyController implements Controller {
@@ -19,7 +19,9 @@ export class CurrencyController implements Controller {
 
   private initializeRoutes = () => {
     this.router
-      .get(`${this.path}`, authMiddleware, asyncHandler(this.getAllCurrency))
+      .all(`${this.path}`, authMiddleware)
+      .all(`${this.path}/*`, authMiddleware)
+      .get(`${this.path}`, asyncHandler(this.getAllCurrency))
       .get(`${this.path}/:id`, asyncHandler(this.getCurrencyById))
       .delete(`${this.path}/:id`, asyncHandler(this.deleteCurrency))
       .post(

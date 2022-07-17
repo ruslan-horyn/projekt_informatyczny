@@ -1,7 +1,7 @@
 import { HttpException } from './HttpException';
 
 export class CurrencyIdIsIncorrectException extends HttpException {
-  constructor(id: unknown) {
+  constructor(id: string) {
     super(404, `The currency id ${id} is incorrect`);
   }
 }

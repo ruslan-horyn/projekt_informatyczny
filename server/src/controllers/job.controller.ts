@@ -5,7 +5,7 @@ import { CreateJobWithAddressDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import JobService from '../services/job.service';
 import {
-  Controller, Job, JobWithAddress, RequestWithUser,
+  Controller, JobWithAddress, RequestWithUser,
 } from '../types';
 
 export class JobController implements Controller {
@@ -21,7 +21,9 @@ export class JobController implements Controller {
 
   private initializeRoutes = () => {
     this.router
-      .get(`${this.path}`, authMiddleware, asyncHandler(this.getAllJobs))
+      .all(`${this.path}`, authMiddleware)
+      .all(`${this.path}/*`, authMiddleware)
+      .get(`${this.path}`, asyncHandler(this.getAllJobs))
       .get(`${this.path}/:id`, asyncHandler(this.getJobById))
       .delete(`${this.path}/:id`, asyncHandler(this.deleteJob))
       .post(

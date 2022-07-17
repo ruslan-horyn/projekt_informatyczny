@@ -7,12 +7,12 @@ export class EmployeeIsExistsException extends HttpException {
 }
 
 export class EmployeeIdIsIncorrectException extends HttpException {
-  constructor(id: unknown) {
+  constructor(id: string) {
     super(404, `The employee id ${id} is incorrect`);
   }
 }
 export class EmployeeAddressNotFoundException extends HttpException {
-  constructor(id: unknown) {
+  constructor(id: string) {
     super(404, `The address employee id ${id} not found`);
   }
 }

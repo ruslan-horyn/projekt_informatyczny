@@ -1,7 +1,7 @@
 import { HttpException } from './HttpException';
 
 export class RoleIdNotFindException extends HttpException {
-  constructor(id: unknown) {
+  constructor(id: string) {
     super(404, `Role ${id} not found`);
   }
 }

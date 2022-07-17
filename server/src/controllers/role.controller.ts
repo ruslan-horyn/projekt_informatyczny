@@ -17,6 +17,20 @@ export class RoleController implements Controller {
     this.initializeRoutes();
   }
 
+  private initializeRoutes() {
+    this.router
+      .all(`${this.path}`, authMiddleware)
+      .all(`${this.path}/*`, authMiddleware)
+      .get(this.path, asyncHandler(this.getAllRoles))
+      .get(`${this.path}/:id`, asyncHandler(this.getRoleById))
+      .delete(`${this.path}/:id`, asyncHandler(this.deleteRole))
+      .post(
+        this.path,
+        validationMiddleware(CreateRoleDto),
+        asyncHandler(this.createRole),
+      );
+  }
+
   public getAllRoles = async (_req: Request, res: Response) => {
     const roles = await this.roleService.getAllRoles();
     res.send(roles);
@@ -39,18 +53,4 @@ export class RoleController implements Controller {
     const role = await this.roleService.deleteRole(id);
     res.json({ message: 'success', role });
   };
-
-  private initializeRoutes() {
-    this.router
-      .all(`${this.path}`, authMiddleware)
-      .all(`${this.path}/*`, authMiddleware)
-      .get(this.path, asyncHandler(this.getAllRoles))
-      .get(`${this.path}/:id`, asyncHandler(this.getRoleById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteRole))
-      .post(
-        this.path,
-        validationMiddleware(CreateRoleDto),
-        asyncHandler(this.createRole),
-      );
-  }
 }

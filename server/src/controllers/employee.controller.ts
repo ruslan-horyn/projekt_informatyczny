@@ -21,7 +21,9 @@ export class EmployeeController implements Controller {
 
   private initializeRoutes = () => {
     this.router
-      .get(`${this.path}`, authMiddleware, asyncHandler(this.getAllEmployees))
+      .all(`${this.path}`, authMiddleware)
+      .all(`${this.path}/*`, authMiddleware)
+      .get(`${this.path}`, asyncHandler(this.getAllEmployees))
       .get(`${this.path}/:id`, asyncHandler(this.getEmployeeById))
       .get(`${this.path}/address/:id`, asyncHandler(this.getEmployeeAddress))
       .delete(`${this.path}/:id`, asyncHandler(this.deleteEmployee))
