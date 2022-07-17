@@ -28,6 +28,11 @@ export class UserController implements Controller {
         this.path,
         validationMiddleware(CreateUserDto),
         asyncHandler(this.createUser),
+      )
+      .patch(
+        `${this.path}/:id`,
+        validationMiddleware(CreateUserDto, true),
+        asyncHandler(this.updateUser),
       );
   }
 
@@ -50,9 +55,16 @@ export class UserController implements Controller {
   };
 
   private createUser = async (req: RequestWithUser, res: Response) => {
-    const { body } = req;
-    const user = await this.userService.createUser(body as User);
+    const body = req.body as User;
+    const user = await this.userService.createUser(body);
     res.status(201)
       .json(user);
+  };
+
+  private updateUser = async (req: RequestWithUser, res: Response) => {
+    const { id } = req.params;
+    const user = req.body as User;
+    const userNew = await this.userService.updateUser(id, user);
+    res.json(userNew);
   };
 }

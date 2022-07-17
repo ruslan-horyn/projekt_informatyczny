@@ -73,4 +73,18 @@ export class UserService {
 
     return user;
   }
+
+  async updateUser(id: string, data: User) {
+    if (!id) {
+      throw new UserIdIsIncorrectException(id);
+    }
+
+    const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
+  }
 }
