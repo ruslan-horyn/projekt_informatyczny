@@ -4,9 +4,9 @@
 	"description": "server for project of IT",
 	"main": "src/server.ts",
 	"scripts": {
-		"start": "ts-node src/server.ts",
+		"start": "ts-node index.ts",
 		"build": "tsc -p tsconfig.build.json",
-		"server": "nodemon src/server.ts",
+		"server": "nodemon index.ts",
 		"test": "jest --unhandled-rejections=strict",
 		"test:watch": "test --watch",
 		"test:ci": "npm run test -- --coverage --ci",

@@ -64,12 +64,13 @@
     "composite": true
   },
   "include": [
-    "./src/index.ts",
+    "index.ts",
     "./src/**/*",
-    "./styled.d.ts",
+    "./styled.d.ts", 
     //    "jest-coverage-fixer.js",
   ],
   "exclude": [
+    "jest.config.js",
     "./node_modules",
     "**/*.dev.ts",
     "**/*.prod.ts"

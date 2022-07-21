@@ -6,6 +6,7 @@ import { JobController } from './job.controller';
 import { PostsController } from './post.controller';
 import { RoleController } from './role.controller';
 import { UserController } from './user.controller';
+import { VacancyController } from './vacancy.controller';
 import { VacancyTypeController } from './vacancyType.controller';
 
 const controllers: Controller[] = [
@@ -17,6 +18,7 @@ const controllers: Controller[] = [
   new EmployeeController(),
   new CurrencyController(),
   new VacancyTypeController(),
+  new VacancyController(),
 ];
 
 export default controllers;

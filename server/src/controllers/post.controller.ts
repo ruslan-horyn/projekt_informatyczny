@@ -1,5 +1,5 @@
 import {
-  NextFunction, Request, Response, Router,
+  Request, Response, Router,
 } from 'express';
 import asyncHandler from 'express-async-handler';
 
@@ -42,13 +42,13 @@ export class PostsController implements Controller {
   private getPostById = async (
     req: Request,
     res: Response,
-    next: NextFunction,
   ) => {
     const { id } = req.params;
+
     const post = await PostModel.findById(id);
 
     if (!post) {
-      next(new PostNotFoundException(id));
+      throw new PostNotFoundException(id);
     }
 
     res.send(post);

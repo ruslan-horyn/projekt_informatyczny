@@ -7,7 +7,7 @@ import {
 import { JobModel } from '../models';
 import { JobWithAddress } from '../types';
 
-class JobService {
+export class JobService {
   private readonly model: Model<JobWithAddress>;
 
   constructor() {
@@ -58,5 +58,3 @@ class JobService {
     return this.model.findByIdAndUpdate(id, job, { new: true });
   }
 }
-
-export default JobService;

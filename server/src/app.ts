@@ -8,7 +8,9 @@ import { Controller } from './types';
 // TODO: start develop a job, employee, employeeAddress, - done
 //  employeeSocialPhone, social model and shames - wont do
 
-// TODO: start develop a, currency(done), vacancyType, vacancy, model and shames
+// TODO: start develop a currency(done), vacancyType(done), vacancy(done), model and shames
+
+// TODO: testing all models and services
 
 class App {
   public app: Application;

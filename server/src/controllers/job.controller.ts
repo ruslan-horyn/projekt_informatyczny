@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 
 import { CreateJobWithAddressDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
-import JobService from '../services/job.service';
+import { JobService } from '../services';
 import {
   Controller, JobWithAddress, RequestWithUser,
 } from '../types';

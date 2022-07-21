@@ -8,4 +8,5 @@ export * from './jwt.type';
 export * from './post.type';
 export * from './role.type';
 export * from './user.type';
+export * from './vacancy.type';
 export * from './vacancyType.type';
