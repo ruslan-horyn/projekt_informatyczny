@@ -1,6 +1,9 @@
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDefined, IsObject, IsString } from 'class-validator';
+import { Address } from '../types';
+import { AddressDto } from './address.dto';
 
-export class CreateJobDto {
+export class JobDto {
   @IsString()
   declare public name: string;
 
@@ -11,19 +14,17 @@ export class CreateJobDto {
   declare public phone: string;
 }
 
-export class CreateJobWithAddressDto extends CreateJobDto {
+export class JobWithAddressDto {
   @IsString()
-  declare public city: string;
+  declare public name: string;
 
   @IsString()
-  declare public zcode: string;
+  declare public description: string;
 
   @IsString()
-  declare public street: string;
+  declare public phone: string;
 
-  @IsString()
-  declare public house: string;
-
-  @IsString()
-  declare public local: string;
+  @IsDefined() @IsObject()
+  @Type(() => AddressDto)
+  declare public address: Address;
 }

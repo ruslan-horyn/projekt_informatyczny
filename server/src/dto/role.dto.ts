@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class CreateRoleDto {
+export class RoleDto {
   @IsString()
   declare public name: string;
 }

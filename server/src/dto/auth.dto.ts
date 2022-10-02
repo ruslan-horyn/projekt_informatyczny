@@ -1,11 +1,9 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsDefined, IsEmail, IsString } from 'class-validator';
 
-export class AuthDto {
-  @IsEmail()
+export class LoginDto {
+  @IsDefined() @IsEmail()
   declare public email: string;
 
-  @IsString({
-    message: 'Password is required',
-  })
+  @IsDefined() @IsString()
   declare public password: string;
 }
