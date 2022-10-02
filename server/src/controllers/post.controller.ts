@@ -10,15 +10,15 @@ import { PostModel } from '../models';
 import { Controller, Post } from '../types';
 
 export class PostsController implements Controller {
-  public path = '/posts';
+  path = '/posts';
 
-  public router = Router();
+  router = Router();
 
   constructor() {
     this.initializeRoutes();
   }
 
-  public initializeRoutes() {
+  private initializeRoutes() {
     this.router
       .get(this.path, asyncHandler(this.getAllPosts))
       .get(`${this.path}/:id`, asyncHandler(this.getPostById))

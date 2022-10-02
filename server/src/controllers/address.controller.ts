@@ -11,9 +11,9 @@ import {
 } from '../types';
 
 export class AddressController implements Controller {
-  public readonly path = '/address';
+  readonly path = '/address';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private addressService: AddressService = new AddressService();
 
@@ -65,6 +65,6 @@ export class AddressController implements Controller {
   private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
     await this.addressService.delete(id);
-    res.status(200);
+    res.sendStatus(200);
   };
 }

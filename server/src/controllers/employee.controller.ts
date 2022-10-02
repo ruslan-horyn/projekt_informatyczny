@@ -1,17 +1,17 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { CreateEmployeeDto } from '../dto';
+import { EmployeeDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
-import { EmployeeService } from '../services/employee.service';
+import { EmployeeService } from '../services';
 import {
-  Controller, Employee, RequestWithUser,
+  Controller, Employee, IdType, UserRequest,
 } from '../types';
 
 export class EmployeeController implements Controller {
-  public readonly path = '/employee';
+  readonly path = '/employee';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private employeeService: EmployeeService = new EmployeeService();
 
@@ -23,54 +23,47 @@ export class EmployeeController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/*`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllEmployees))
-      .get(`${this.path}/:id`, asyncHandler(this.getEmployeeById))
-      .get(`${this.path}/address/:id`, asyncHandler(this.getEmployeeAddress))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteEmployee))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         `${this.path}`,
-        validationMiddleware(CreateEmployeeDto),
-        asyncHandler(this.createEmployee),
+        validationMiddleware(EmployeeDto),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
-        validationMiddleware(CreateEmployeeDto, true),
-        asyncHandler(this.updateEmployee),
+        validationMiddleware(EmployeeDto, true),
+        asyncHandler(this.update),
       );
   };
 
-  private getAllEmployees = async (_req: RequestWithUser, res: Response) => {
-    const employee = await this.employeeService.getAllEmployees();
+  private getAll = async (_req: UserRequest, res: Response<Employee[]>) => {
+    const employee = await this.employeeService.getAll();
     res.json(employee);
   };
 
-  private getEmployeeById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response<Employee>) => {
     const { id } = req.params;
-    const employee = await this.employeeService.getEmployeeById(id);
+    const employee = await this.employeeService.getById(id);
     res.json(employee);
   };
 
-  private getEmployeeAddress = async (req: RequestWithUser, res: Response) => {
+  private create = async (req: UserRequest, res: Response<Employee>) => {
+    const employee = await this.employeeService.create(req.body as Employee);
+    res.json(employee);
+  };
+
+  private update = async (req: UserRequest<IdType, Employee>, res: Response<Employee>) => {
     const { id } = req.params;
-    const employee = await this.employeeService.getEmployeeAddress(id);
-    res.json(employee);
+    const employee = req.body;
+    const newOne = await this.employeeService.update(id, employee);
+    res.json(newOne);
   };
 
-  private createEmployee = async (req: RequestWithUser, res: Response) => {
-    const employee = await this.employeeService.createEmployee(req.body as Employee);
-    res.json(employee);
-  };
-
-  private updateEmployee = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const employee = req.body as Employee;
-    const employeeNew = await this.employeeService.updateEmployee(id, employee);
-    res.json(employeeNew);
-  };
-
-  private deleteEmployee = async (req: RequestWithUser, res: Response) => {
-    const { id } = req.params;
-    const employee = await this.employeeService.deleteEmployee(id);
-    res.json(employee);
+    await this.employeeService.delete(id);
+    res.sendStatus(200);
   };
 }

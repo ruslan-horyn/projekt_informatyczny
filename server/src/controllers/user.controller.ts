@@ -1,15 +1,17 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { CreateUserDto } from '../dto';
+import { UserDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import { UserService } from '../services';
-import { Controller, RequestWithUser, User } from '../types';
+import {
+  Controller, IdType, User, UserRequest,
+} from '../types';
 
 export class UserController implements Controller {
-  public path = '/users';
+  path = '/users';
 
-  public router = Router();
+  router = Router();
 
   private userService = new UserService();
 
@@ -21,50 +23,51 @@ export class UserController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/:id`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllUsers))
-      .get(`${this.path}/:id`, asyncHandler(this.getUserById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteUser))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         this.path,
-        validationMiddleware(CreateUserDto),
-        asyncHandler(this.createUser),
+        validationMiddleware(UserDto),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
-        validationMiddleware(CreateUserDto, true),
-        asyncHandler(this.updateUser),
+        validationMiddleware(UserDto, true),
+        asyncHandler(this.update),
       );
   }
 
-  private getAllUsers = async (_req: RequestWithUser, res: Response) => {
-    const users = await this.userService.getAllUsers();
+  private getAll = async (_req: UserRequest, res: Response) => {
+    const users = await this.userService.getAll();
     res.json(users);
   };
 
-  private getUserById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const user = await this.userService.getUserById(id);
+    const user = await this.userService.getById(id);
+    user.password = '';
     res.json(user);
   };
 
-  private deleteUser = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const user = await this.userService.deleteUser(id);
-    res.status(200)
-      .json({ message: 'User deleted successfully', user });
+    await this.userService.delete(id);
+    res.sendStatus(200);
   };
 
-  private createUser = async (req: RequestWithUser, res: Response) => {
-    const body = req.body as User;
-    const user = await this.userService.createUser(body);
+  private create = async (req: UserRequest<unknown, User>, res: Response) => {
+    const { body } = req;
+    const user = await this.userService.create(body);
+    user.password = '';
     res.status(201)
       .json(user);
   };
 
-  private updateUser = async (req: RequestWithUser, res: Response) => {
+  private update = async (req: UserRequest<IdType, User>, res: Response) => {
     const { id } = req.params;
-    const user = req.body as User;
-    const userNew = await this.userService.updateUser(id, user);
-    res.json(userNew);
+    const user = await this.userService.update(id, req.body);
+    user.password = '';
+    res.json(user);
   };
 }

@@ -1,17 +1,20 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
-
-import { CreateJobWithAddressDto } from '../dto';
+import { JobDto, JobWithAddressDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import { JobService } from '../services';
 import {
-  Controller, JobWithAddress, RequestWithUser,
+  Controller,
+  IdType,
+  Job,
+  JobWithAddress,
+  UserRequest,
 } from '../types';
 
 export class JobController implements Controller {
-  public readonly path = '/jobs';
+  readonly path = '/jobs';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private jobService: JobService = new JobService();
 
@@ -23,47 +26,48 @@ export class JobController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/*`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllJobs))
-      .get(`${this.path}/:id`, asyncHandler(this.getJobById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteJob))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         `${this.path}`,
-        validationMiddleware(CreateJobWithAddressDto),
-        asyncHandler(this.createJob),
+        validationMiddleware(JobWithAddressDto),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
-        validationMiddleware(CreateJobWithAddressDto, true),
-        asyncHandler(this.updateJob),
+        validationMiddleware(JobDto, true),
+        asyncHandler(this.update),
       );
   };
 
-  private getAllJobs = async (_req: RequestWithUser, res: Response) => {
-    const jobs = await this.jobService.getAllJobs();
+  private getAll = async (_req: UserRequest, res: Response<Job[]>) => {
+    const jobs = await this.jobService.getAll();
+
     res.json(jobs);
   };
 
-  private getJobById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response<Job>) => {
     const { id } = req.params;
-    const jobs = await this.jobService.getJobById(id);
-    res.json(jobs);
+    const job = await this.jobService.getById(id);
+    res.json(job);
   };
 
-  private createJob = async (req: RequestWithUser, res: Response) => {
-    const jobs = await this.jobService.createJob(req.body as JobWithAddress);
-    res.json(jobs);
+  private create = async (req: UserRequest<IdType, JobWithAddress>, res: Response<Job>) => {
+    const { address: idAddress, ...job } = req.body;
+    const newJob = await this.jobService.create(job, idAddress);
+    res.json(newJob);
   };
 
-  private updateJob = async (req: RequestWithUser, res: Response) => {
+  private update = async (req: UserRequest<IdType, Job>, res: Response<Job>) => {
     const { id } = req.params;
-    const job = req.body as JobWithAddress;
-    const jobNew = await this.jobService.updateJob(id, job);
-    res.json(jobNew);
+    const newJob = await this.jobService.update(id, req.body);
+    res.json(newJob);
   };
 
-  private deleteJob = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const jobs = await this.jobService.deleteJob(id);
-    res.json(jobs);
+    await this.jobService.delete(id);
+    res.sendStatus(200);
   };
 }

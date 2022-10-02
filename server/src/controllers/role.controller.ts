@@ -1,15 +1,20 @@
-import { Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { CreateRoleDto } from '../dto';
+import { RoleDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import { RoleService } from '../services';
-import { Controller, Role } from '../types';
+import {
+  Controller,
+  IdType,
+  Role,
+  UserRequest,
+} from '../types';
 
 export class RoleController implements Controller {
-  public readonly path = '/roles';
+  readonly path = '/roles';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private roleService = new RoleService();
 
@@ -21,36 +26,36 @@ export class RoleController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/*`, authMiddleware)
-      .get(this.path, asyncHandler(this.getAllRoles))
-      .get(`${this.path}/:id`, asyncHandler(this.getRoleById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteRole))
+      .get(this.path, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         this.path,
-        validationMiddleware(CreateRoleDto),
-        asyncHandler(this.createRole),
+        validationMiddleware(RoleDto),
+        asyncHandler(this.create),
       );
   }
 
-  public getAllRoles = async (_req: Request, res: Response) => {
+  private getAll = async (_req: UserRequest, res: Response<Role[]>) => {
     const roles = await this.roleService.getAllRoles();
-    res.send(roles);
+    res.json(roles);
   };
 
-  public getRoleById = async (req: Request, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response<Role>) => {
     const { id } = req.params;
     const role = await this.roleService.getRoleById(id);
-    res.send(role);
+    res.json(role);
   };
 
-  public createRole = async (req: Request, res: Response) => {
-    const { name } = req.body as Role;
+  private create = async (req: UserRequest<unknown, Role>, res: Response<Role>) => {
+    const { name } = req.body;
     const role = await this.roleService.createRole(name);
-    res.send(role);
+    res.json(role);
   };
 
-  public deleteRole = async (req: Request, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const role = await this.roleService.deleteRole(id);
-    res.json({ message: 'success', role });
+    await this.roleService.deleteRole(id);
+    res.sendStatus(200);
   };
 }

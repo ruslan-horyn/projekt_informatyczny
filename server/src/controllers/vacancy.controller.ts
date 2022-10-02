@@ -8,12 +8,14 @@ import {
   CurrencyService,
   EmployeeService, JobService, VacancyService, VacancyTypeService,
 } from '../services';
-import { Controller, RequestWithUser, Vacancy } from '../types';
+import {
+  Controller, IdType, UserRequest, Vacancy,
+} from '../types';
 
 export class VacancyController implements Controller {
-  public readonly path = '/vacancy';
+  readonly path = '/vacancy';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private vacancyService: VacancyService = new VacancyService();
 
@@ -33,81 +35,59 @@ export class VacancyController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/:id`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllVacancy))
-      .get(`${this.path}/:id`, asyncHandler(this.getVacancyById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteVacancy))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         `${this.path}`,
         validationMiddleware(CreateVacancyDto),
-        asyncHandler(this.createVacancy),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
         validationMiddleware(CreateVacancyDto, true),
-        asyncHandler(this.updateVacancy),
+        asyncHandler(this.update),
       );
   };
 
-  private getAllVacancy = async (_req: RequestWithUser, res: Response) => {
-    const vacancy = await this.vacancyService.getAllVacancy();
+  private getAll = async (_req: UserRequest, res: Response<Vacancy[]>) => {
+    const vacancy = await this.vacancyService.getAll();
     res.json(vacancy);
   };
 
-  private getVacancyById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response<Vacancy>) => {
     const { id } = req.params;
-    const vacancy = await this.vacancyService.getVacancyById(id);
+    const vacancy = await this.vacancyService.getById(id);
     res.json(vacancy);
   };
 
-  private createVacancy = async (req: RequestWithUser, res: Response) => {
-    const body = req.body as Vacancy;
-    const {
-      currency, type, job, employee,
-    } = body;
+  private create = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>) => {
+    const { body } = req;
 
-    const [
-      jobSearch,
-      employeeSearch,
-      vacancyTypeSearch,
-      currencySearch,
-    ] = await Promise.all([
-      this.jobService.getJobById(job),
-      this.employeeService.getEmployeeById(employee),
-      this.vacancyTypeService.getVacancyTypeById(type),
-      this.currencyService.getCurrencyById(currency),
-    ]);
+    await Promise.all([
+      this.jobService.getById(body.job),
+      this.employeeService.getById(body.employee),
+      this.vacancyTypeService.getById(body.type),
+      this.currencyService.getById(body.currency),
+    ])
+      .catch(() => {
+        throw new VacancyCreateErrorException();
+      });
 
-    console.log({
-      jobSearch,
-      employeeSearch,
-      vacancyTypeSearch,
-      currencySearch,
-    });
-
-    if (jobSearch
-      && employeeSearch
-      && vacancyTypeSearch
-      && currencySearch) {
-      const vacancy = await this.vacancyService.createVacancy(body);
-      res.json(vacancy);
-    } else {
-      throw new VacancyCreateErrorException();
-    }
-
-    const vacancy = await this.vacancyService.createVacancy(body);
+    const vacancy = await this.vacancyService.create(body);
     res.json(vacancy);
   };
 
-  private updateVacancy = async (req: RequestWithUser, res: Response) => {
+  private update = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>) => {
     const { id } = req.params;
-    const body = req.body as Vacancy;
-    const vacancy = await this.vacancyService.updateVacancy(id, body);
+    const { body } = req;
+    const vacancy = await this.vacancyService.update(id, body);
     res.json(vacancy);
   };
 
-  private deleteVacancy = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const vacancy = await this.vacancyService.deleteVacancy(id);
-    res.json(vacancy);
+    await this.vacancyService.delete(id);
+    res.sendStatus(200);
   };
 }

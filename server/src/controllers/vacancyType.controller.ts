@@ -4,12 +4,14 @@ import asyncHandler from 'express-async-handler';
 import { CreateVacancyTypeDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import { VacancyTypeService } from '../services';
-import { Controller, RequestWithUser, VacancyType } from '../types';
+import {
+  Controller, IdType, UserRequest, VacancyType,
+} from '../types';
 
 export class VacancyTypeController implements Controller {
-  public readonly path = '/vacancy-type';
+  readonly path = '/vacancy-type';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private currencyService: VacancyTypeService = new VacancyTypeService();
 
@@ -21,48 +23,48 @@ export class VacancyTypeController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/:id`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllVacancyType))
-      .get(`${this.path}/:id`, asyncHandler(this.getVacancyTypeById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteCurrency))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         `${this.path}`,
         validationMiddleware(CreateVacancyTypeDto),
-        asyncHandler(this.createVacancyType),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
         validationMiddleware(CreateVacancyTypeDto, true),
-        asyncHandler(this.updateCurrency),
+        asyncHandler(this.update),
       );
   };
 
-  private getAllVacancyType = async (_req: RequestWithUser, res: Response) => {
-    const vacancyType = await this.currencyService.getAllVacancyType();
+  private getAll = async (_req: UserRequest, res: Response) => {
+    const vacancyType = await this.currencyService.getAll();
     res.json(vacancyType);
   };
 
-  private getVacancyTypeById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response<VacancyType>) => {
     const { id } = req.params;
-    const vacancyType = await this.currencyService.getVacancyTypeById(id);
+    const vacancyType = await this.currencyService.getById(id);
     res.json(vacancyType);
   };
 
-  private createVacancyType = async (req: RequestWithUser, res: Response) => {
+  private create = async (req: UserRequest, res: Response<VacancyType>) => {
     const body = req.body as VacancyType;
-    const vacancyType = await this.currencyService.createVacancyType(body);
+    const vacancyType = await this.currencyService.create(body);
     res.json(vacancyType);
   };
 
-  private updateCurrency = async (req: RequestWithUser, res: Response) => {
+  private update = async (req: UserRequest<IdType, VacancyType>, res: Response<VacancyType>) => {
     const { id } = req.params;
-    const body = req.body as VacancyType;
-    const vacancyType = await this.currencyService.updateVacancyType(id, body);
+    const { body } = req;
+    const vacancyType = await this.currencyService.update(id, body);
     res.json(vacancyType);
   };
 
-  private deleteCurrency = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response<VacancyType>) => {
     const { id } = req.params;
-    const vacancyType = await this.currencyService.deleteVacancyType(id);
-    res.json(vacancyType);
+    await this.currencyService.delete(id);
+    res.sendStatus(200);
   };
 }

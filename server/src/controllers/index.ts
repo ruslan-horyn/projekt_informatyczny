@@ -8,6 +8,7 @@ import { RoleController } from './role.controller';
 import { UserController } from './user.controller';
 import { VacancyController } from './vacancy.controller';
 import { VacancyTypeController } from './vacancyType.controller';
+import { AddressController } from './address.controller';
 
 const controllers: Controller[] = [
   new PostsController(),
@@ -19,6 +20,7 @@ const controllers: Controller[] = [
   new CurrencyController(),
   new VacancyTypeController(),
   new VacancyController(),
+  new AddressController(),
 ];
 
 export default controllers;

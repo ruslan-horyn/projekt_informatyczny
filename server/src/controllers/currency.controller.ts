@@ -1,15 +1,20 @@
 import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { CreateCurrencyDto } from '../dto';
+import { CurrencyDto } from '../dto';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import { CurrencyService } from '../services';
-import { Controller, Currency, RequestWithUser } from '../types';
+import {
+  Controller,
+  Currency,
+  IdType,
+  UserRequest,
+} from '../types';
 
 export class CurrencyController implements Controller {
-  public readonly path = '/currency';
+  readonly path = '/currency';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private currencyService: CurrencyService = new CurrencyService();
 
@@ -21,48 +26,48 @@ export class CurrencyController implements Controller {
     this.router
       .all(`${this.path}`, authMiddleware)
       .all(`${this.path}/*`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAllCurrency))
-      .get(`${this.path}/:id`, asyncHandler(this.getCurrencyById))
-      .delete(`${this.path}/:id`, asyncHandler(this.deleteCurrency))
+      .get(`${this.path}`, asyncHandler(this.getAll))
+      .get(`${this.path}/:id`, asyncHandler(this.getById))
+      .delete(`${this.path}/:id`, asyncHandler(this.delete))
       .post(
         `${this.path}`,
-        validationMiddleware(CreateCurrencyDto),
-        asyncHandler(this.createCurrency),
+        validationMiddleware(CurrencyDto),
+        asyncHandler(this.create),
       )
       .patch(
         `${this.path}/:id`,
-        validationMiddleware(CreateCurrencyDto, true),
-        asyncHandler(this.updateCurrency),
+        validationMiddleware(CurrencyDto, true),
+        asyncHandler(this.update),
       );
   };
 
-  private getAllCurrency = async (_req: RequestWithUser, res: Response) => {
-    const currency = await this.currencyService.getAllCurrency();
+  private getAll = async (_req: UserRequest, res: Response) => {
+    const currency = await this.currencyService.getAll();
     res.json(currency);
   };
 
-  private getCurrencyById = async (req: RequestWithUser, res: Response) => {
+  private getById = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const currency = await this.currencyService.getCurrencyById(id);
+    const currency = await this.currencyService.getById(id);
     res.json(currency);
   };
 
-  private createCurrency = async (req: RequestWithUser, res: Response) => {
-    const body = req.body as Currency;
-    const currency = await this.currencyService.createCurrency(body);
+  private create = async (req: UserRequest<unknown, Currency>, res: Response<Currency>) => {
+    const { body } = req;
+    const currency = await this.currencyService.create(body);
     res.json(currency);
   };
 
-  private updateCurrency = async (req: RequestWithUser, res: Response) => {
+  private update = async (req: UserRequest<IdType, Currency>, res: Response<Currency>) => {
     const { id } = req.params;
-    const currency = req.body as Currency;
-    const jobNew = await this.currencyService.updateCurrency(id, currency);
-    res.json(jobNew);
+    const currency = req.body;
+    const newOne = await this.currencyService.update(id, currency);
+    res.json(newOne);
   };
 
-  private deleteCurrency = async (req: RequestWithUser, res: Response) => {
+  private delete = async (req: UserRequest<IdType>, res: Response) => {
     const { id } = req.params;
-    const currency = await this.currencyService.deleteCurrency(id);
-    res.json(currency);
+    await this.currencyService.delete(id);
+    res.sendStatus(200);
   };
 }

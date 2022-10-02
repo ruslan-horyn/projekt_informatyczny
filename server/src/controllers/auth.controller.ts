@@ -1,20 +1,21 @@
 import { Request, Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { AuthDto } from '../dto';
+import { LoginDto } from '../dto';
 import {
-  EnterRequiredFieldException,
   UserPassIsInvalidException,
 } from '../exceptions';
 import { validationMiddleware } from '../middleware';
 import { UserService } from '../services';
-import { Controller, RequestWithLoginBody } from '../types';
+import {
+  Controller, RequestWithLoginBody, TokenData,
+} from '../types';
 import { doPasswordsMatch, generateToken } from '../utils';
 
 export class AuthController implements Controller {
-  public readonly path = '/auth';
+  readonly path = '/auth';
 
-  public readonly router = Router();
+  readonly router = Router();
 
   private userService: UserService = new UserService();
 
@@ -26,18 +27,17 @@ export class AuthController implements Controller {
     this.router
       .post(
         `${this.path}/login`,
-        validationMiddleware(AuthDto),
+        validationMiddleware(LoginDto),
         asyncHandler(this.login),
       )
       .get(`${this.path}/logout`, asyncHandler(this.loggingOut));
   };
 
-  private login = async (req: RequestWithLoginBody, res: Response) => {
+  private login = async (
+    req: RequestWithLoginBody,
+    res: Response<{ token: TokenData['token']}>,
+  ) => {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      throw new EnterRequiredFieldException();
-    }
 
     const user = await this.userService.getUserByEmail(email);
     const isValid = await doPasswordsMatch(password, user.password);
@@ -46,15 +46,13 @@ export class AuthController implements Controller {
       throw new UserPassIsInvalidException();
     }
 
-    await user.populate('roles');
-    const tokenData = generateToken(user);
+    const tokenData = generateToken(user.id);
 
-    user.password = undefined;
-    res.send({ token: tokenData.token, user });
+    res.send({ token: tokenData.token });
   };
 
   private loggingOut = (_req: Request, res: Response) => {
     res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-    res.send(200);
+    res.sendStatus(200);
   };
 }
