@@ -3,14 +3,14 @@ import asyncHandler from 'express-async-handler';
 
 import {
   HttpException,
-  NotAuthorisationTokenException,
+  NotAuthorizationTokenException,
 } from '../exceptions';
 import { UserService } from '../services';
-import { RequestWithUser } from '../types';
+import { UserRequest } from '../types';
 import { decode } from '../utils';
 
 export const authMiddleware = asyncHandler(async (
-  req: RequestWithUser,
+  req: UserRequest,
   _res: Response,
   next: NextFunction,
 ) => {
@@ -19,13 +19,13 @@ export const authMiddleware = asyncHandler(async (
   const token = authorization?.split(' ')[1];
 
   if (!isBearerToken || !token) {
-    throw new NotAuthorisationTokenException();
+    throw new NotAuthorizationTokenException();
   }
 
   try {
     const { id } = decode(token);
     const user = await new UserService()
-      .getUserById(id);
+      .getById(id);
     user.password = undefined;
     req.user = user;
     next();
