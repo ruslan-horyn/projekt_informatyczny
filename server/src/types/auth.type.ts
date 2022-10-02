@@ -1,14 +1,8 @@
 import { Request } from 'express';
 
-import { User } from './user.type';
-
-export interface RequestWithUser extends Request {
-  user?: User;
+export type Login = {
+  email: string,
+  password: string
 }
 
-export interface RequestWithLoginBody extends Request {
-  body: {
-    email: string,
-    password: string
-  };
-}
+export type RequestWithLoginBody = Request<unknown, unknown, Login>

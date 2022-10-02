@@ -1,8 +1,7 @@
-import { Types } from 'mongoose';
-
 import { Address } from './address.type';
 
 export interface Employee {
+  id: string;
   firstName: string;
   lastName: string;
   phone: string;
@@ -12,8 +11,7 @@ export interface Employee {
   visaEnd: string;
 }
 
-export interface EmployeeAddress extends Address {
+export interface EmployeeWithStartAddress extends Address {
   start: string;
   end: string;
-  idEmployee: Types.ObjectId;
 }
