@@ -6,27 +6,27 @@ import { Vacancy } from '../types';
 
 export class CreateVacancyDto {
   @IsString()
-  declare public name: string;
+  declare name: string;
 
   @IsDate()
-  declare public start: string;
+  declare start: string;
 
   @ValidateIf((o: Vacancy) => typeof o.end === 'string' && o.end.length > 0)
   @IsDate()
-  declare public end: string;
+  declare end: string;
 
   @IsString()
-  declare public salary: string;
+  declare salary: string;
 
   @IsString()
-  declare public type: string;
+  declare type: string;
 
   @IsString()
-  declare public job: string;
+  declare job: string;
 
   @IsString()
-  declare public employee: string;
+  declare employee: string;
 
   @IsString()
-  declare public currency: string;
+  declare currency: string;
 }

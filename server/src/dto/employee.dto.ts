@@ -2,23 +2,23 @@ import { IsDate, IsEmail, IsString } from 'class-validator';
 
 export class EmployeeDto {
   @IsString()
-  declare public firstName: string;
+  declare firstName: string;
 
   @IsString()
-  declare public lastName: string;
+  declare lastName: string;
 
   @IsString()
-  declare public phone: string;
+  declare phone: string;
 
   @IsString() @IsEmail()
-  declare public email: string;
+  declare email: string;
 
   @IsString()
-  declare public passportSerialNumber: string;
+  declare passportSerialNumber: string;
 
   @IsString() @IsDate()
-  declare public visaStart: string;
+  declare visaStart: string;
 
   @IsString() @IsDate()
-  declare public visaEnd: string;
+  declare visaEnd: string;
 }

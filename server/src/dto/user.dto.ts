@@ -2,22 +2,22 @@ import {
   ArrayUnique, IsArray, IsEmail, IsString,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class UserDto {
   @IsString()
-  declare public firstName: string;
+  declare firstName: string;
 
   @IsString()
-  declare public lastName: string;
+  declare lastName: string;
 
   @IsString() @IsEmail()
-  declare public email: string;
+  declare email: string;
 
   @IsString()
-  declare public password: string;
+  declare password: string;
 
   @IsString()
-  declare public confirm: string;
+  declare confirm: string;
 
   @IsArray() @ArrayUnique()
-  declare public roles: string[];
+  declare roles: string[];
 }

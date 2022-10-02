@@ -1,30 +1,18 @@
-import { Type } from 'class-transformer';
-import { IsDefined, IsObject, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Address } from '../types';
-import { AddressDto } from './address.dto';
 
 export class JobDto {
   @IsString()
-  declare public name: string;
+  declare name: string;
 
   @IsString()
-  declare public description: string;
+  declare description: string;
 
   @IsString()
-  declare public phone: string;
+  declare phone: string;
 }
 
-export class JobWithAddressDto {
+export class JobWithAddressDto extends JobDto {
   @IsString()
-  declare public name: string;
-
-  @IsString()
-  declare public description: string;
-
-  @IsString()
-  declare public phone: string;
-
-  @IsDefined() @IsObject()
-  @Type(() => AddressDto)
-  declare public address: Address;
+  declare address: Address;
 }
