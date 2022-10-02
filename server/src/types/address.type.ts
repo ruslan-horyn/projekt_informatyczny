@@ -1,7 +1,11 @@
 export interface Address {
-  location: string
-  zcode: string
-  street: string;
+  id: string;
   house: string;
-  local: string;
+  local?: string;
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  region?: string; // województwo
+  district?: string; // gmina
 }

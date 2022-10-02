@@ -1,18 +1,35 @@
-import { IsString } from 'class-validator';
+import { IsString, ValidateIf } from 'class-validator';
+import { Address } from '../types';
 
 export class AddressDto {
+  @ValidateIf((o: Address) => !!o.id)
   @IsString()
-  declare public city: string;
+  declare id: string;
 
   @IsString()
-  declare public zcode: string;
+  declare state: string;
 
   @IsString()
-  declare public street: string;
+  declare house: string;
 
   @IsString()
-  declare public house: string;
+  declare local: string;
 
   @IsString()
-  declare public local: string;
+  declare street: string;
+
+  @IsString()
+  declare city: string;
+
+  @IsString()
+  declare postalCode: string;
+
+  @IsString()
+  declare country: string;
+
+  @IsString()
+  declare region: string;
+
+  @IsString()
+  declare district: string;
 }
