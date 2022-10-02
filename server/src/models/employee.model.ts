@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-import { Employee } from '../types';
+import { Employee, TransformType } from '../types';
 
 export const EmployeeSchema = new Schema({
   firstName: { type: String, required: true },
@@ -12,6 +12,13 @@ export const EmployeeSchema = new Schema({
   visaEnd: { type: String, required: true },
 }, {
   timestamps: true,
+  toJSON: {
+    transform(_doc, ret: TransformType) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+    },
+  },
 });
 
 export const EmployeeModel = model<Employee>('Employee', EmployeeSchema);

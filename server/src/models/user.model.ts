@@ -1,8 +1,8 @@
 import { model, Schema } from 'mongoose';
 
-import { User } from '../types';
+import { TransformType, User } from '../types';
 
-export const UserSchema = new Schema({
+export const UserSchema = new Schema<User>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -14,6 +14,13 @@ export const UserSchema = new Schema({
   }],
 }, {
   timestamps: true,
+  toJSON: {
+    transform(_doc, ret: TransformType) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+    },
+  },
 });
 
 export const UserModel = model<User>('User', UserSchema);
