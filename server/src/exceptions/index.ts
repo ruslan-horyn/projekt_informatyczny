@@ -1,3 +1,4 @@
+export * from './Address.exceptions';
 export * from './Auth.exceptions';
 export * from './Employee.exceptions';
 export * from './HttpException';

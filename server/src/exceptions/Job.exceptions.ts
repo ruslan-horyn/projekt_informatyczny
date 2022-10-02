@@ -2,7 +2,7 @@ import { HttpException } from './HttpException';
 
 export class JobIdNotFindException extends HttpException {
   constructor(id: string) {
-    super(404, `Post with id ${id} not found`);
+    super(404, `Job with id ${id} not found`);
   }
 }
 
