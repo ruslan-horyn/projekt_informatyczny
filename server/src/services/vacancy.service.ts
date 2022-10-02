@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   VacancyIdIsIncorrectException,
@@ -8,19 +8,15 @@ import { VacancyModel } from '../models';
 import { Vacancy } from '../types';
 
 export class VacancyService {
-  private readonly vacancyModel: Model<Vacancy>;
+  private readonly vacancyModel: Model<Vacancy> = VacancyModel;
 
-  constructor() {
-    this.vacancyModel = VacancyModel;
-  }
-
-  public async getAllVacancy() {
+  async getAll() {
     return this.vacancyModel.find()
       .populate(['job', 'employee', 'type', 'currency']);
   }
 
-  public async getVacancyById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<Vacancy> {
+    if (!isValidObjectId(id)) {
       throw new VacancyIdIsIncorrectException(id);
     }
 
@@ -34,27 +30,29 @@ export class VacancyService {
     return vacancy;
   }
 
-  public async createVacancy(data: Vacancy) {
-    // const { name,  } = data;
-    // const vacancy = await this.vacancyModel.findOne({ name });
-
-    // if (vacancy) {
-    //   throw new VacancyIsExistsException(name);
-    // }
-
-    return this.vacancyModel.create<Vacancy>(data);
+  async create(data: Vacancy): Promise<Vacancy> {
+    return (await this.vacancyModel.create(data))
+      .populate(['job', 'employee', 'type', 'currency']);
   }
 
-  public async updateVacancy(id: string, data: Vacancy) {
-    if (!id) {
+  async update(id: string, data: Vacancy): Promise<Vacancy> {
+    if (!isValidObjectId(id)) {
       throw new VacancyIdIsIncorrectException(id);
     }
 
-    return this.vacancyModel.findByIdAndUpdate<Vacancy>(id, data, { new: true });
+    const vacancy = await this.vacancyModel
+      .findByIdAndUpdate<Vacancy>(id, data, { new: true })
+      .populate(['job', 'employee', 'type', 'currency']);
+
+    if (!vacancy) {
+      throw new VacancyNotFoundException();
+    }
+
+    return vacancy;
   }
 
-  async deleteVacancy(id: string) {
-    if (!id) {
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
       throw new VacancyIdIsIncorrectException(id);
     }
 
@@ -63,7 +61,5 @@ export class VacancyService {
     if (!vacancy) {
       throw new VacancyNotFoundException();
     }
-
-    return vacancy;
   }
 }

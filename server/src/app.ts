@@ -5,20 +5,12 @@ import express, { Application } from 'express';
 import { errorMiddleware, loggerMiddleware } from './middleware';
 import { Controller } from './types';
 
-// TODO: start develop a job, employee, employeeAddress, - done
-//  employeeSocialPhone, social model and shames - wont do
-
-// TODO: start develop a currency(done), vacancyType(done), vacancy(done), model and shames
-
-// TODO: testing all models and services
-
 class App {
-  public app: Application;
+  app: Application = express();
 
-  public port: number;
+  port: number;
 
   constructor(controllers: Controller[], port: number) {
-    this.app = express();
     this.port = port;
 
     this.initializeMiddleware();
@@ -46,7 +38,7 @@ class App {
     this.app.use(errorMiddleware);
   }
 
-  public listen() {
+  listen() {
     this.app.listen(this.port, () => {
       // eslint-disable-next-line no-console
       console.log(

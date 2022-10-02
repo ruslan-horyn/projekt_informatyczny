@@ -2,7 +2,6 @@
   "extends": [
     "./.eslintrc-base.js"
   ],
-  "plugins": ["simple-import-sort"],
   "parserOptions": {
     "project": "./tsconfig.json",
     "tsconfigRootDir": ".",
@@ -11,7 +10,6 @@
   },
   "rules": {
     "max-classes-per-file": "off",
-    "simple-import-sort/exports": "error",
-    "simple-import-sort/imports": "error"
+    "no-param-reassign": "off"
   }
 }

@@ -2,13 +2,13 @@ import { sign, verify } from 'jsonwebtoken';
 
 import { DataStoredInToken, TokenData } from '../types';
 
-export const generateToken = (user): TokenData => {
+export const generateToken = (idUser: string): TokenData => {
   const secret = process.env.JWT_SECRET;
 
   if (secret) {
     const expiresIn = 60 * 60;
 
-    const token = sign({ id: user._id }, secret, { expiresIn: '365d' });
+    const token = sign({ id: idUser }, secret, { expiresIn: '365d' });
 
     return { token, expiresIn };
   }

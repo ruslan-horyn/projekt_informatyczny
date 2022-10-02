@@ -26,7 +26,7 @@ export const authMiddleware = asyncHandler(async (
     const { id } = decode(token);
     const user = await new UserService()
       .getById(id);
-    user.password = undefined;
+    user.password = '';
     req.user = user;
     next();
   } catch (err) {

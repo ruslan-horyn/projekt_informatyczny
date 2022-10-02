@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   AddressIdIsIncorrectException,
@@ -9,18 +9,14 @@ import { AddressModel } from '../models';
 import { Address } from '../types';
 
 export class AddressService {
-  private readonly addressModel: Model<Address>;
+  private readonly addressModel: Model<Address> = AddressModel;
 
-  constructor() {
-    this.addressModel = AddressModel;
-  }
-
-  public async getAll() {
+  async getAll(): Promise<Address[]> {
     return this.addressModel.find<Address>();
   }
 
-  public async getById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<Address> {
+    if (!isValidObjectId(id)) {
       throw new AddressIdIsIncorrectException(id);
     }
 
@@ -33,7 +29,7 @@ export class AddressService {
     return address;
   }
 
-  public async getOne(data: Address) {
+  async getOne(data: Address): Promise<Address> {
     const address = await this.addressModel.findOne<Address>({ ...data });
 
     if (!address) {
@@ -43,7 +39,7 @@ export class AddressService {
     return address;
   }
 
-  public async create(data: Address): Promise<Address> {
+  async create(data: Address): Promise<Address> {
     const address = await this.addressModel.findOne<Address>({ ...data });
 
     if (address) {
@@ -53,8 +49,8 @@ export class AddressService {
     return this.addressModel.create<Address>(data);
   }
 
-  public async update(id: string, data: Address): Promise<Address> {
-    if (!id) {
+  async update(id: string, data: Address): Promise<Address> {
+    if (!isValidObjectId(id)) {
       throw new AddressIdIsIncorrectException(id);
     }
 
@@ -69,7 +65,7 @@ export class AddressService {
   }
 
   async delete(id: string): Promise<void> {
-    if (!id) {
+    if (!isValidObjectId(id)) {
       throw new AddressIdIsIncorrectException(id);
     }
 

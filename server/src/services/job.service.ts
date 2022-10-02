@@ -1,29 +1,27 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   JobIdNotFindException,
   JobNotFind,
 } from '../exceptions';
 import { JobModel } from '../models';
-import { JobWithAddress } from '../types';
+import { Job } from '../types';
 
 export class JobService {
-  private readonly model: Model<JobWithAddress>;
+  private readonly jobModel: Model<Job> = JobModel;
 
-  constructor() {
-    this.model = JobModel;
+  async getAll(): Promise<Job[]> {
+    return this.jobModel.find()
+      .populate('address');
   }
 
-  async getAllJobs() {
-    return this.model.find();
-  }
-
-  async getJobById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<Job> {
+    if (!isValidObjectId(id)) {
       throw new JobIdNotFindException(id);
     }
 
-    const job = await this.model.findById(id);
+    const job = await this.jobModel.findById(id)
+      .populate('address');
 
     if (!job) {
       throw new JobNotFind();
@@ -32,29 +30,34 @@ export class JobService {
     return job;
   }
 
-  async createJob(job: JobWithAddress) {
-    return this.model.create({ ...job });
+  async create(job: Job, idAddress: string): Promise<Job> {
+    return (await this.jobModel.create({ ...job, address: idAddress })).populate('address');
   }
 
-  async deleteJob(id: string) {
-    if (!id) {
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
       throw new JobIdNotFindException(id);
     }
 
-    const job = await this.model.findByIdAndDelete(id);
+    const job = await this.jobModel.findByIdAndDelete(id);
 
     if (!job) {
       throw new JobNotFind();
     }
-
-    return job;
   }
 
-  async updateJob(id: string, job: JobWithAddress) {
-    if (!id) {
+  async update(id: string, job: Job): Promise<Job> {
+    if (!isValidObjectId(id)) {
       throw new JobIdNotFindException(id);
     }
 
-    return this.model.findByIdAndUpdate(id, job, { new: true });
+    const newOne = await this.jobModel.findByIdAndUpdate(id, job)
+      .populate('address');
+
+    if (!newOne) {
+      throw new JobNotFind();
+    }
+
+    return newOne;
   }
 }

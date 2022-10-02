@@ -1,3 +1,4 @@
+import { isValidObjectId, Model } from 'mongoose';
 import {
   UserIdIsIncorrectException,
   UserIsExistsException,
@@ -9,13 +10,16 @@ import { User } from '../types';
 import { hashedPassword } from '../utils';
 
 export class UserService {
-  public async getAllUsers() {
-    return UserModel.find()
+  private readonly userModel: Model<User> = UserModel;
+
+  async getAll(): Promise<User[]> {
+    return this.userModel.find()
+      .populate('roles')
       .select('-password');
   }
 
-  public async getUserByEmail(email: string) {
-    const user = await UserModel.findOne({ email });
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne<User>({ email });
 
     if (!user) {
       throw new UserNotFoundException();
@@ -24,12 +28,12 @@ export class UserService {
     return user;
   }
 
-  public async getUserById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<User> {
+    if (!isValidObjectId(id)) {
       throw new UserIdIsIncorrectException(id);
     }
 
-    const user = await UserModel.findById(id);
+    const user = await this.userModel.findById(id);
 
     if (!user) {
       throw new UserNotFoundException();
@@ -38,48 +42,51 @@ export class UserService {
     return user;
   }
 
-  public async createUser(data: User) {
+  async create(data: User): Promise<User> {
     const {
       password, confirm, email, ...rest
     } = data;
 
-    const user = await UserModel.findOne({ email });
+    if (password !== confirm) {
+      throw new UserPassIsInvalidException();
+    }
+
+    const user = await this.userModel.findOne<User>({ email });
 
     if (user) {
       throw new UserIsExistsException(email);
-    } else if (password !== confirm) {
-      throw new UserPassIsInvalidException();
     }
 
     const hashPassword = await hashedPassword(password);
 
-    return UserModel.create({
+    return this.userModel.create({
       ...rest,
       email,
       password: hashPassword,
-    });
+    })
+      .then((u) => u.populate('roles'));
   }
 
-  async deleteUser(id: string) {
-    if (!id) {
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
       throw new UserIdIsIncorrectException(id);
     }
 
-    const user = await UserModel.findByIdAndDelete(id);
+    const user = await this.userModel.findByIdAndDelete(id);
 
     if (!user) {
       throw new UserNotFoundException();
     }
-
-    return user;
   }
 
-  async updateUser(id: string, data: User) {
-    if (!id) {
+  async update(id: string, data: User): Promise<User> {
+    if (!isValidObjectId(id)) {
       throw new UserIdIsIncorrectException(id);
     }
 
-    const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
+    const user = await this.userModel
+      .findByIdAndUpdate(id, data, { new: true })
+      .populate('roles');
 
     if (!user) {
       throw new UserNotFoundException();

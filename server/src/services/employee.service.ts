@@ -1,29 +1,21 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
-  EmployeeAddressNotFoundException,
   EmployeeIdIsIncorrectException,
   EmployeeIsExistsException,
   EmployeeNotFoundException,
 } from '../exceptions';
-import { EmployeeAddressModel, EmployeeModel } from '../models';
-import { Employee, EmployeeAddress } from '../types';
+import { EmployeeModel } from '../models';
+import { Employee } from '../types';
 
 export class EmployeeService {
-  private readonly employeeModel: Model<Employee>;
+  private readonly employeeModel: Model<Employee> = EmployeeModel;
 
-  private readonly employeeAddressModel: Model<EmployeeAddress>;
-
-  constructor() {
-    this.employeeModel = EmployeeModel;
-    this.employeeAddressModel = EmployeeAddressModel;
-  }
-
-  public async getAllEmployees() {
+  async getAll(): Promise<Employee[]> {
     return this.employeeModel.find();
   }
 
-  public async getEmployeeById(id: string) {
+  async getById(id: string): Promise<Employee> {
     const employee = await this.employeeModel.findById(id);
 
     if (!employee) {
@@ -33,7 +25,7 @@ export class EmployeeService {
     return employee;
   }
 
-  public async createEmployee(data: Employee) {
+  async create(data: Employee): Promise<Employee> {
     const {
       email, ...rest
     } = data;
@@ -50,20 +42,12 @@ export class EmployeeService {
     });
   }
 
-  public async updateEmployee(id: string, employee: Employee) {
-    if (!id) {
+  async update(id: string, data: Employee): Promise<Employee> {
+    if (!isValidObjectId(id)) {
       throw new EmployeeIdIsIncorrectException(id);
     }
 
-    return this.employeeModel.findByIdAndUpdate(id, employee, { new: true });
-  }
-
-  public async deleteEmployee(id: string) {
-    if (!id) {
-      throw new EmployeeIdIsIncorrectException(id);
-    }
-
-    const employee = await this.employeeModel.findByIdAndDelete(id);
+    const employee = await this.employeeModel.findByIdAndUpdate(id, data, { new: true });
 
     if (!employee) {
       throw new EmployeeNotFoundException();
@@ -72,13 +56,15 @@ export class EmployeeService {
     return employee;
   }
 
-  public async getEmployeeAddress(id: string) {
-    const address = await this.employeeAddressModel.find({ idEmployee: id });
-
-    if (!address) {
-      throw new EmployeeAddressNotFoundException(id);
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
+      throw new EmployeeIdIsIncorrectException(id);
     }
 
-    return address;
+    const employee = await this.employeeModel.findByIdAndDelete(id);
+
+    if (!employee) {
+      throw new EmployeeNotFoundException();
+    }
   }
 }

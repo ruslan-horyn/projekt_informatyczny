@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   RoleIdNotFindException,
@@ -8,18 +8,14 @@ import { RoleModel } from '../models';
 import { Role } from '../types';
 
 export class RoleService {
-  private readonly model: Model<Role>;
+  private readonly model: Model<Role> = RoleModel;
 
-  constructor() {
-    this.model = RoleModel;
+  async getAllRoles(): Promise<Role[]> {
+    return this.model.find<Role>();
   }
 
-  async getAllRoles() {
-    return this.model.find();
-  }
-
-  async getRoleById(id: string) {
-    if (!id) {
+  async getRoleById(id: string): Promise<Role> {
+    if (!isValidObjectId(id)) {
       throw new RoleIdNotFindException(id);
     }
 
@@ -32,12 +28,12 @@ export class RoleService {
     return role;
   }
 
-  async createRole(name: string) {
+  async createRole(name: string): Promise<Role> {
     return this.model.create({ name });
   }
 
-  async deleteRole(id: string) {
-    if (!id) {
+  async deleteRole(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
       throw new RoleIdNotFindException(id);
     }
 
@@ -46,7 +42,5 @@ export class RoleService {
     if (!role) {
       throw new RoleNotFind();
     }
-
-    return role;
   }
 }

@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   VacancyTypeIdIsIncorrectException,
@@ -9,18 +9,14 @@ import { VacancyTypeModel } from '../models';
 import { VacancyType } from '../types';
 
 export class VacancyTypeService {
-  private readonly vacancyTypeModel: Model<VacancyType>;
+  private readonly vacancyTypeModel: Model<VacancyType> = VacancyTypeModel;
 
-  constructor() {
-    this.vacancyTypeModel = VacancyTypeModel;
-  }
-
-  public async getAllVacancyType() {
+  async getAll(): Promise<VacancyType[]> {
     return this.vacancyTypeModel.find();
   }
 
-  public async getVacancyTypeById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<VacancyType> {
+    if (!isValidObjectId(id)) {
       throw new VacancyTypeIdIsIncorrectException(id);
     }
 
@@ -33,7 +29,7 @@ export class VacancyTypeService {
     return vacancyType;
   }
 
-  public async createVacancyType(data: VacancyType) {
+  async create(data: VacancyType): Promise<VacancyType> {
     const { name } = data;
     const vacancyType = await this.vacancyTypeModel.findOne({ name });
 
@@ -44,16 +40,22 @@ export class VacancyTypeService {
     return this.vacancyTypeModel.create({ name });
   }
 
-  public async updateVacancyType(id: string, data: VacancyType) {
-    if (!id) {
+  async update(id: string, data: VacancyType): Promise<VacancyType> {
+    if (!isValidObjectId(id)) {
       throw new VacancyTypeIdIsIncorrectException(id);
     }
 
-    return this.vacancyTypeModel.findByIdAndUpdate(id, data, { new: true });
+    const vacancyType = await this.vacancyTypeModel.findByIdAndUpdate(id, data, { new: true });
+
+    if (!vacancyType) {
+      throw new VacancyTypeNotFoundException();
+    }
+
+    return vacancyType;
   }
 
-  async deleteVacancyType(id: string) {
-    if (!id) {
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
       throw new VacancyTypeIdIsIncorrectException(id);
     }
 
@@ -62,7 +64,5 @@ export class VacancyTypeService {
     if (!vacancyType) {
       throw new VacancyTypeNotFoundException();
     }
-
-    return vacancyType;
   }
 }

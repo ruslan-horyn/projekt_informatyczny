@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import {
   CurrencyIdIsIncorrectException,
@@ -9,22 +9,18 @@ import { CurrencyModel } from '../models';
 import { Currency } from '../types';
 
 export class CurrencyService {
-  private readonly currencyModel: Model<Currency>;
+  private readonly currencyModel: Model<Currency> = CurrencyModel;
 
-  constructor() {
-    this.currencyModel = CurrencyModel;
+  async getAll(): Promise<Currency[]> {
+    return this.currencyModel.find<Currency>();
   }
 
-  public async getAllCurrency() {
-    return this.currencyModel.find();
-  }
-
-  public async getCurrencyById(id: string) {
-    if (!id) {
+  async getById(id: string): Promise<Currency> {
+    if (!isValidObjectId(id)) {
       throw new CurrencyIdIsIncorrectException(id);
     }
 
-    const currency = await this.currencyModel.findById(id);
+    const currency = await this.currencyModel.findById<Currency>(id);
 
     if (!currency) {
       throw new CurrencyNotFoundException();
@@ -33,36 +29,40 @@ export class CurrencyService {
     return currency;
   }
 
-  public async createCurrency(data: Currency) {
+  async create(data: Currency): Promise<Currency> {
     const { name } = data;
-    const currency = await this.currencyModel.findOne({ name });
+    const existsCurrency = await this.currencyModel.findOne<Currency>({ name });
 
-    if (currency) {
+    if (existsCurrency) {
       throw new CurrencyIsExistsException(name);
     }
 
     return this.currencyModel.create({ name });
   }
 
-  public async updateCurrency(id: string, data: Currency) {
-    if (!id) {
+  async update(id: string, data: Currency): Promise<Currency> {
+    if (!isValidObjectId(id)) {
       throw new CurrencyIdIsIncorrectException(id);
     }
 
-    return this.currencyModel.findByIdAndUpdate(id, data, { new: true });
-  }
-
-  async deleteCurrency(id: string) {
-    if (!id) {
-      throw new CurrencyIdIsIncorrectException(id);
-    }
-
-    const currency = await this.currencyModel.findByIdAndDelete(id);
+    const currency = await this.currencyModel.findByIdAndUpdate<Currency>(id, data, { new: true });
 
     if (!currency) {
       throw new CurrencyNotFoundException();
     }
 
     return currency;
+  }
+
+  async delete(id: string): Promise<void> {
+    if (!isValidObjectId(id)) {
+      throw new CurrencyIdIsIncorrectException(id);
+    }
+
+    const currency = await this.currencyModel.findByIdAndDelete<Currency>(id);
+
+    if (!currency) {
+      throw new CurrencyNotFoundException();
+    }
   }
 }
