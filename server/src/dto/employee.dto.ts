@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, IsString } from 'class-validator';
+import { IsDateString, IsEmail, IsString } from 'class-validator';
 
 export class EmployeeDto {
   @IsString()
@@ -16,9 +16,9 @@ export class EmployeeDto {
   @IsString()
   declare passportSerialNumber: string;
 
-  @IsString() @IsDate()
+  @IsDateString()
   declare visaStart: string;
 
-  @IsString() @IsDate()
+  @IsDateString()
   declare visaEnd: string;
 }
