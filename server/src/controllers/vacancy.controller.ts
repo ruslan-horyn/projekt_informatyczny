@@ -65,10 +65,10 @@ export class VacancyController implements Controller {
     const { body } = req;
 
     await Promise.all([
-      this.jobService.getById(body.job),
-      this.employeeService.getById(body.employee),
-      this.vacancyTypeService.getById(body.type),
-      this.currencyService.getById(body.currency),
+      this.jobService.getById(body.jobId),
+      this.employeeService.getById(body.employeeId),
+      this.vacancyTypeService.getById(body.typeId),
+      this.currencyService.getById(body.currencyId),
     ])
       .catch(() => {
         throw new VacancyCreateErrorException();
