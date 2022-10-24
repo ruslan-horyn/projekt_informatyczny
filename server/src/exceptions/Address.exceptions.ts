@@ -2,18 +2,18 @@ import { HttpException } from './HttpException';
 
 export class AddressIdIsIncorrectException extends HttpException {
   constructor(id: string) {
-    super(404, `The address id ${id} is incorrect`);
+    super(`The address id ${id} is incorrect`);
   }
 }
 
 export class AddressIsExistsException extends HttpException {
   constructor() {
-    super(404, 'The address is already exists');
+    super('The address is already exists');
   }
 }
 
 export class AddressNotFoundException extends HttpException {
   constructor() {
-    super(404, 'The address not found');
+    super('The address not found');
   }
 }

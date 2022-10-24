@@ -31,6 +31,6 @@ export const authMiddleware = asyncHandler(async (
     next();
   } catch (err) {
     const error = err as Error;
-    throw new HttpException(401, error.message);
+    throw new HttpException(error.message, 401);
   }
 });

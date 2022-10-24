@@ -28,6 +28,6 @@ export const validationMiddleware = (
     })
     .catch((err) => {
       const error = err as Error;
-      next(new HttpException(400, error.message));
+      next(new HttpException(error.message, 400));
     });
 };
