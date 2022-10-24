@@ -1,8 +1,9 @@
-client
+packages/client
+packages/server/.env
+
 node_modules
 
 build
 dist
 lib
 .idea
-server/.env

@@ -1,20 +1,28 @@
 {
   "name": "projekt_informatyczny",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "projekt_informatyczny monorepo",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "npx lerna clean -y",
+    "boot": "npx lerna bootstrap",
+    "reboot": "npm run clean && npm run boot",
+    "build": "npx lerna run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ruslan-horyn/projekt_informatyczny.git"
+    "url": "https://github.com/ruslan-horyn/projekt_informatyczny.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ruslan Horyn",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ruslan-horyn/projekt_informatyczny/issues"
   },
-  "homepage": "https://github.com/ruslan-horyn/projekt_informatyczny#readme"
+  "homepage": "https://github.com/ruslan-horyn/projekt_informatyczny#readme",
+  "devDependencies": {
+    "lerna": "^6.0.1"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
