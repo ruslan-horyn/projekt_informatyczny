@@ -1,8 +1,0 @@
-node_modules/
-manifest/
-dist/
-build/
-lib/
-.env
-.env.*
-.history

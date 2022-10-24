@@ -1,9 +1,42 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 packages/client
-packages/server/.env
 
+# dependencies
 node_modules
+/.pnp
+.pnp.js
 
-build
+# testing
+coverage
+src/coverage
+reports/
+
+# production
 dist
-lib
-.idea
+build
+build-server
+/build/
+.jestCache
+
+# misc
+.DS_Store
+.awcache
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.temp_cache
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.idea/
+/.vscode/
+/storybook/node_modules/
+.env
+*.iml
+reports/
+*.tgz
+
+# ignore lock files inside packages direcotry
+packages/**/package-lock.json

@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "./.eslintrc-base.js"
+  ],
+  "parserOptions": {
+    "project": [
+      "packages/server/tsconfig.json"
+    ],
+    "tsconfigRootDir": ".",
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "public",
+    "tsconfig.*.json"
+  ],
+  "rules": {
+    "max-classes-per-file": "off",
+    "no-param-reassign": "off"
+  }
+}
