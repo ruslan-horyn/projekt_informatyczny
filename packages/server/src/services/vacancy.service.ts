@@ -12,7 +12,7 @@ export class VacancyService {
 
   async getAll() {
     return this.vacancyModel.find()
-      .populate(['job', 'employee', 'type', 'currency']);
+      .populate(['jobId', 'employeeId', 'typeId', 'currencyId']);
   }
 
   async getById(id: string): Promise<Vacancy> {
@@ -21,7 +21,7 @@ export class VacancyService {
     }
 
     const vacancy = await this.vacancyModel.findById<Vacancy>(id)
-      .populate(['job', 'employee', 'type', 'currency']);
+      .populate(['jobId', 'employeeId', 'typeId', 'currencyId']);
 
     if (!vacancy) {
       throw new VacancyNotFoundException();
@@ -32,7 +32,7 @@ export class VacancyService {
 
   async create(data: Vacancy): Promise<Vacancy> {
     return (await this.vacancyModel.create(data))
-      .populate(['job', 'employee', 'type', 'currency']);
+      .populate(['jobId', 'employeeId', 'typeId', 'currencyId']);
   }
 
   async update(id: string, data: Vacancy): Promise<Vacancy> {
@@ -42,7 +42,7 @@ export class VacancyService {
 
     const vacancy = await this.vacancyModel
       .findByIdAndUpdate<Vacancy>(id, data, { new: true })
-      .populate(['job', 'employee', 'type', 'currency']);
+      .populate(['jobId', 'employeeId', 'typeId', 'currencyId']);
 
     if (!vacancy) {
       throw new VacancyNotFoundException();

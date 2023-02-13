@@ -11,7 +11,7 @@ export class CreateVacancyDto {
   @IsDateString()
   declare start: string;
 
-  @ValidateIf(({ end }: Vacancy) => typeof end === 'string')
+  @ValidateIf(({ end }: Vacancy) => !!end)
   @IsDateString()
   declare end: string;
 

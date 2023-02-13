@@ -79,13 +79,19 @@ export class UserService {
     }
   }
 
-  async update(id: string, data: User): Promise<User> {
+  async update(id: string, data: Partial<User>): Promise<User> {
     if (!isValidObjectId(id)) {
       throw new UserIdIsIncorrectException(id);
     }
 
+    const copyUser = { ...data };
+
+    if (copyUser.password) {
+      copyUser.password = await hashedPassword(copyUser.password);
+    }
+
     const user = await this.userModel
-      .findByIdAndUpdate(id, data, { new: true })
+      .findByIdAndUpdate(id, copyUser, { new: true })
       .populate('roles');
 
     if (!user) {

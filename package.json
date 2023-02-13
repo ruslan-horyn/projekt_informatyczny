@@ -6,7 +6,8 @@
     "clean": "npx lerna clean -y",
     "boot": "npx lerna bootstrap",
     "reboot": "npm run clean && rm -rf node_modules && npm run boot",
-    "build": "npx lerna run build"
+    "build": "npx lerna run build",
+    "start:server": "cd packages/server && npm run server"
   },
   "repository": {
     "type": "git",

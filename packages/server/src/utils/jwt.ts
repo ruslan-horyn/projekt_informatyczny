@@ -6,9 +6,9 @@ export const generateToken = (idUser: string): TokenData => {
   const secret = process.env.JWT_SECRET;
 
   if (secret) {
-    const expiresIn = 60 * 60;
+    const expiresIn = 15 * 60 * 1000;
 
-    const token = sign({ id: idUser }, secret, { expiresIn: '365d' });
+    const token = sign({ id: idUser }, secret, { expiresIn });
 
     return { token, expiresIn };
   }

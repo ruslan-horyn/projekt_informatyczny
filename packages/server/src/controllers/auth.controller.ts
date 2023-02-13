@@ -30,12 +30,12 @@ export class AuthController implements Controller {
         validationMiddleware(LoginDto),
         asyncHandler(this.login),
       )
-      .get(`${this.path}/logout`, asyncHandler(this.loggingOut));
+      .post(`${this.path}/logout`, asyncHandler(this.logout));
   };
 
   private login = async (
     req: RequestWithLoginBody,
-    res: Response<{ token: TokenData['token']}>,
+    res: Response<{ token: TokenData['token'] }>,
   ) => {
     const { email, password } = req.body;
 
@@ -48,11 +48,14 @@ export class AuthController implements Controller {
 
     const tokenData = generateToken(user.id);
 
+    res.cookie('Authorization', tokenData.token, {
+      httpOnly: true, path: '/', sameSite: 'strict', maxAge: tokenData.expiresIn,
+    });
     res.send({ token: tokenData.token });
   };
 
-  private loggingOut = (_req: Request, res: Response) => {
-    res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
+  private logout = (_req: Request, res: Response) => {
+    res.clearCookie('Authorization');
     res.sendStatus(200);
   };
 }

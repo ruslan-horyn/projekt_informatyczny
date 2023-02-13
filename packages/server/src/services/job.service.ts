@@ -51,7 +51,7 @@ export class JobService {
       throw new JobIdNotFindException(id);
     }
 
-    const newOne = await this.jobModel.findByIdAndUpdate(id, job)
+    const newOne = await this.jobModel.findByIdAndUpdate(id, job, { new: true })
       .populate('address');
 
     if (!newOne) {

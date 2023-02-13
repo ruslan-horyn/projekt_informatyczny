@@ -2,7 +2,6 @@ import { Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
 
 import { CreateVacancyDto } from '../dto';
-import { VacancyCreateErrorException } from '../exceptions';
 import { authMiddleware, validationMiddleware } from '../middleware';
 import {
   CurrencyService,
@@ -69,10 +68,7 @@ export class VacancyController implements Controller {
       this.employeeService.getById(body.employeeId),
       this.vacancyTypeService.getById(body.typeId),
       this.currencyService.getById(body.currencyId),
-    ])
-      .catch(() => {
-        throw new VacancyCreateErrorException();
-      });
+    ]);
 
     const vacancy = await this.vacancyService.create(body);
     res.json(vacancy);

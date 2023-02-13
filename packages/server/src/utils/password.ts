@@ -11,5 +11,5 @@ export const hashedPassword = async (
 
 export const doPasswordsMatch = (
   pass: string,
-  hashedPass = '',
+  hashedPass: string,
 ): Promise<boolean> => bcrypt.compare(pass, hashedPass);
