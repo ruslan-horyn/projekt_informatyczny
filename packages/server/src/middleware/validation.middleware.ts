@@ -6,28 +6,21 @@ import {
 
 import { HttpException } from '../exceptions';
 
-const throwValidationException = (errors: ValidationError[]) => {
-  const messages = errors
-    .map((error: ValidationError) => Object.values(error.constraints || {}))
-    .join(', ');
-  throw new Error(messages);
-};
+const getValidationExceptionMessage = (errors: ValidationError[]) => errors
+  .map((error: ValidationError) => Object.values(error.constraints || {}))
+  .join(', ');
 
 export const validationMiddleware = (
   type: ClassConstructor<object>,
   skipMissingProperties = false,
-): RequestHandler => (req: Request, _res: Response, next: NextFunction) => {
+): RequestHandler => async (req: Request, _res: Response, next: NextFunction) => {
   const dtoObj = plainToClass(type, req.body);
-  validate(dtoObj, { skipMissingProperties })
-    .then((errors: ValidationError[]) => {
-      if (errors.length > 0) {
-        throwValidationException(errors);
-      }
+  const validationErrors = await validate(dtoObj, { skipMissingProperties });
+  const messages = getValidationExceptionMessage(validationErrors);
 
-      next();
-    })
-    .catch((err) => {
-      const error = err as Error;
-      next(new HttpException(error.message, 400));
-    });
+  if (messages) {
+    next(new HttpException(messages, 400));
+  }
+
+  next();
 };

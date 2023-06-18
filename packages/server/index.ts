@@ -1,17 +1,16 @@
 import colors from 'colors';
 import dotenv from 'dotenv';
-
 import App from './src/app';
 import connectDB from './src/config/connectDB';
-import controllers from './src/controllers';
-import { validateEnv } from './src/utils';
+import routers from './src/routers';
+import { validateEnv } from './src/utils/validateEnv';
 
 dotenv.config();
 validateEnv();
 
 const port = process.env.PORT ? +process.env.PORT : 5000;
 
-const app = new App(controllers, port);
+const app = new App(routers, port);
 
 async function startApp() {
   await connectDB();

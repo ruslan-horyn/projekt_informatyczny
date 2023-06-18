@@ -7,7 +7,7 @@ import {
 } from '../exceptions';
 import { UserModel } from '../models';
 import { User } from '../types';
-import { hashedPassword } from '../utils';
+import { hashedPassword } from '../utils/password';
 
 export class UserService {
   private readonly userModel: Model<User> = UserModel;

@@ -1,89 +1,60 @@
-import { Response, Router } from 'express';
-import asyncHandler from 'express-async-handler';
-
-import { CreateVacancyDto } from '../dto';
-import { authMiddleware, validationMiddleware } from '../middleware';
+import { Response } from 'express';
+import { CurrencyService } from '../services/currency.service';
+import { EmployeeService } from '../services/employee.service';
+import { JobService } from '../services/job.service';
+import { VacancyService } from '../services/vacancy.service';
+import { VacancyTypeService } from '../services/vacancyType.service';
 import {
-  CurrencyService,
-  EmployeeService, JobService, VacancyService, VacancyTypeService,
-} from '../services';
-import {
-  Controller, IdType, UserRequest, Vacancy,
+  IdType, UserRequest, Vacancy,
 } from '../types';
 
-export class VacancyController implements Controller {
-  readonly path = '/vacancy';
+interface VacancyControllerServices {
+  vacancy: VacancyService,
+  job: JobService,
+  employee: EmployeeService,
+  vacancyType: VacancyTypeService,
+  currency: CurrencyService,
+}
+export class VacancyController {
+  constructor(
+    private readonly _services: VacancyControllerServices,
+  ) {}
 
-  readonly router = Router();
-
-  private vacancyService: VacancyService = new VacancyService();
-
-  private jobService: JobService = new JobService();
-
-  private employeeService: EmployeeService = new EmployeeService();
-
-  private vacancyTypeService: VacancyTypeService = new VacancyTypeService();
-
-  private currencyService: CurrencyService = new CurrencyService();
-
-  constructor() {
-    this.initializeRoutes();
-  }
-
-  private initializeRoutes = () => {
-    this.router
-      .all(`${this.path}`, authMiddleware)
-      .all(`${this.path}/:id`, authMiddleware)
-      .get(`${this.path}`, asyncHandler(this.getAll))
-      .get(`${this.path}/:id`, asyncHandler(this.getById))
-      .delete(`${this.path}/:id`, asyncHandler(this.delete))
-      .post(
-        `${this.path}`,
-        validationMiddleware(CreateVacancyDto),
-        asyncHandler(this.create),
-      )
-      .patch(
-        `${this.path}/:id`,
-        validationMiddleware(CreateVacancyDto, true),
-        asyncHandler(this.update),
-      );
-  };
-
-  private getAll = async (_req: UserRequest, res: Response<Vacancy[]>) => {
-    const vacancy = await this.vacancyService.getAll();
+  getAll = async (_req: UserRequest, res: Response<Vacancy[]>): Promise<void> => {
+    const vacancy = await this._services.vacancy.getAll();
     res.json(vacancy);
   };
 
-  private getById = async (req: UserRequest<IdType>, res: Response<Vacancy>) => {
+  getById = async (req: UserRequest<IdType>, res: Response<Vacancy>): Promise<void> => {
     const { id } = req.params;
-    const vacancy = await this.vacancyService.getById(id);
+    const vacancy = await this._services.vacancy.getById(id);
     res.json(vacancy);
   };
 
-  private create = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>) => {
+  create = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>): Promise<void> => {
     const { body } = req;
 
     await Promise.all([
-      this.jobService.getById(body.jobId),
-      this.employeeService.getById(body.employeeId),
-      this.vacancyTypeService.getById(body.typeId),
-      this.currencyService.getById(body.currencyId),
+      this._services.job.getById(body.jobId),
+      this._services.employee.getById(body.employeeId),
+      this._services.vacancyType.getById(body.typeId),
+      this._services.currency.getById(body.currencyId),
     ]);
 
-    const vacancy = await this.vacancyService.create(body);
+    const vacancy = await this._services.vacancy.create(body);
     res.json(vacancy);
   };
 
-  private update = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>) => {
+  update = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>): Promise<void> => {
     const { id } = req.params;
     const { body } = req;
-    const vacancy = await this.vacancyService.update(id, body);
+    const vacancy = await this._services.vacancy.update(id, body);
     res.json(vacancy);
   };
 
-  private delete = async (req: UserRequest<IdType>, res: Response) => {
+  delete = async (req: UserRequest<IdType>, res: Response): Promise<void> => {
     const { id } = req.params;
-    await this.vacancyService.delete(id);
+    await this._services.vacancy.delete(id);
     res.sendStatus(200);
   };
 }

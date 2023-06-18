@@ -1,44 +1,21 @@
-import { Request, Response, Router } from 'express';
-import asyncHandler from 'express-async-handler';
-
-import { LoginDto } from '../dto';
+import { Request, Response } from 'express';
 import {
   UserPassIsInvalidException,
 } from '../exceptions';
-import { validationMiddleware } from '../middleware';
-import { UserService } from '../services';
+import { UserService } from '../services/user.service';
 import {
-  Controller, RequestWithLoginBody, TokenData,
+  RequestWithLoginBody, TokenData,
 } from '../types';
-import { doPasswordsMatch, generateToken } from '../utils';
+import { generateRefreshToken, generateToken, verifyRefreshToken } from '../utils/jwt';
+import { doPasswordsMatch } from '../utils/password';
 
-export class AuthController implements Controller {
-  readonly path = '/auth';
+export class AuthController {
+  constructor(
+    private readonly userService: UserService,
+  ) {}
 
-  readonly router = Router();
-
-  private userService: UserService = new UserService();
-
-  constructor() {
-    this.initializeRoutes();
-  }
-
-  private initializeRoutes = () => {
-    this.router
-      .post(
-        `${this.path}/login`,
-        validationMiddleware(LoginDto),
-        asyncHandler(this.login),
-      )
-      .post(`${this.path}/logout`, asyncHandler(this.logout));
-  };
-
-  private login = async (
-    req: RequestWithLoginBody,
-    res: Response<{ token: TokenData['token'] }>,
-  ) => {
+  login = async (req: RequestWithLoginBody, res: Response<{ token: TokenData['token'] }>): Promise<void> => {
     const { email, password } = req.body;
-
     const user = await this.userService.getUserByEmail(email);
     const isValid = await doPasswordsMatch(password, user.password);
 
@@ -47,14 +24,26 @@ export class AuthController implements Controller {
     }
 
     const tokenData = generateToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
 
-    res.cookie('Authorization', tokenData.token, {
-      httpOnly: true, path: '/', sameSite: 'strict', maxAge: tokenData.expiresIn,
+    res.cookie('Authorization', refreshToken.token, {
+      httpOnly: true, path: '/', sameSite: 'strict', maxAge: refreshToken.expiresIn,
     });
     res.send({ token: tokenData.token });
   };
 
-  private logout = (_req: Request, res: Response) => {
+  refresh = (req: Request, res: Response<{ token: TokenData['token'] }>): void => {
+    const cookies = req.cookies as Record<string, unknown>;
+    const tokenData = verifyRefreshToken(cookies?.Authorization);
+    const newTokenData = generateRefreshToken(tokenData.id);
+
+    res.cookie('Authorization', newTokenData.token, {
+      httpOnly: true, path: '/', sameSite: 'strict', maxAge: newTokenData.expiresIn,
+    });
+    res.send({ token: newTokenData.token });
+  };
+
+  logout = (_req: Request, res: Response): void => {
     res.clearCookie('Authorization');
     res.sendStatus(200);
   };

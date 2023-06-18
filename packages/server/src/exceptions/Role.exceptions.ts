@@ -5,7 +5,7 @@ export class RoleIdNotFindException extends HttpException {
     super(`Role ${id} not found`);
   }
 }
-export class RoleNotFind extends HttpException {
+export class RoleNotFound extends HttpException {
   constructor() {
     super('Role not found');
   }

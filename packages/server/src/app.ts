@@ -1,20 +1,18 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { Application } from 'express';
-
+import express, { Application, Router } from 'express';
 import { errorMiddleware, loggerMiddleware } from './middleware';
-import { Controller } from './types';
 
 class App {
   app: Application = express();
 
   port: number;
 
-  constructor(controllers: Controller[], port: number) {
+  constructor(routers: Router[], port: number) {
     this.port = port;
 
     this.initializeMiddleware();
-    this.initializeControllers(controllers);
+    this.initializeRouters(routers);
     this.initializeErrorHandling();
   }
 
@@ -28,9 +26,9 @@ class App {
       .use(loggerMiddleware);
   }
 
-  private initializeControllers(controllers: Controller[]) {
-    controllers.forEach((controller) => {
-      this.app.use('/api', controller.router);
+  private initializeRouters(routers: Router[]) {
+    routers.forEach((router) => {
+      this.app.use(router);
     });
   }
 

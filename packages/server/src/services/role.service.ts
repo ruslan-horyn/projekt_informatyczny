@@ -2,7 +2,7 @@ import { isValidObjectId, Model } from 'mongoose';
 
 import {
   RoleIdNotFindException,
-  RoleNotFind,
+  RoleNotFound
 } from '../exceptions';
 import { RoleModel } from '../models';
 import { Role } from '../types';
@@ -22,7 +22,7 @@ export class RoleService {
     const role = await this.model.findById(id);
 
     if (!role) {
-      throw new RoleNotFind();
+      throw new RoleNotFound();
     }
 
     return role;
@@ -40,7 +40,7 @@ export class RoleService {
     const role = await this.model.findByIdAndDelete(id);
 
     if (!role) {
-      throw new RoleNotFind();
+      throw new RoleNotFound();
     }
   }
 }

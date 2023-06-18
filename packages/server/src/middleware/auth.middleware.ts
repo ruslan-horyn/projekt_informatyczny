@@ -1,15 +1,15 @@
 import { NextFunction, Response } from 'express';
-import asyncHandler from 'express-async-handler';
+import expressAsyncHandler from 'express-async-handler';
 
 import {
   HttpException,
   NotAuthorizationTokenException,
 } from '../exceptions';
-import { UserService } from '../services';
+import { UserService } from '../services/user.service';
 import { UserRequest } from '../types';
-import { decode } from '../utils';
+import { verifyToken } from '../utils/jwt';
 
-export const authMiddleware = asyncHandler(async (
+export const authMiddleware = expressAsyncHandler(async (
   req: UserRequest,
   _res: Response,
   next: NextFunction,
@@ -23,10 +23,10 @@ export const authMiddleware = asyncHandler(async (
   }
 
   try {
-    const { id } = decode(token);
-    const user = await new UserService()
+    const { id } = verifyToken(token);
+    const { password, ...user } = await new UserService()
       .getById(id);
-    user.password = '';
+
     req.user = user;
     next();
   } catch (err) {
