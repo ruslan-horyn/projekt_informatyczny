@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { config } from '../config/configEnv';
 
 import { HttpException } from '../exceptions';
 import { loggerMiddleware } from './logger.middleware';
@@ -9,9 +10,10 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
+  const { nodeEnv } = config;
   const status = error.status || 500;
   const message = error.message || 'Something went wrong';
-  const stack = process.env.NODE_ENV !== 'production' ? error.stack : null;
+  const stack = nodeEnv !== 'production' ? error.stack : null;
   res.status(status)
     .send({
       status,

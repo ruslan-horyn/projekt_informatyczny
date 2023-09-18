@@ -6,9 +6,10 @@ export interface Employee {
   lastName: string;
   phone: string;
   email: string;
-  passportSerialNumber: string;
+  documentIdNumber: string;
   visaStart: string;
   visaEnd: string;
+  address: string;
 }
 
 export interface EmployeeWithStartAddress extends Address {

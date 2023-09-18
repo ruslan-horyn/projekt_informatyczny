@@ -1,9 +1,7 @@
 import { isValidObjectId, Model } from 'mongoose';
 import {
   UserIdIsIncorrectException,
-  UserIsExistsException,
   UserNotFoundException,
-  UserPassIsInvalidException,
 } from '../exceptions';
 import { UserModel } from '../models';
 import { User } from '../types';
@@ -19,13 +17,14 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await this.userModel.findOne<User>({ email });
+    const user = await this.userModel.findOne({ email })
+      .populate('roles');
 
     if (!user) {
       throw new UserNotFoundException();
     }
 
-    return user;
+    return user.toJSON() as User;
   }
 
   async getById(id: string): Promise<User> {
@@ -33,35 +32,26 @@ export class UserService {
       throw new UserIdIsIncorrectException(id);
     }
 
-    const user = await this.userModel.findById(id);
+    const user = await this.userModel.findById(id)
+      .populate('roles')
+      .select('-password');
 
     if (!user) {
       throw new UserNotFoundException();
     }
 
-    return user;
+    return user.toJSON() as User;
   }
 
   async create(data: User): Promise<User> {
     const {
-      password, confirm, email, ...rest
+      password, ...rest
     } = data;
-
-    if (password !== confirm) {
-      throw new UserPassIsInvalidException();
-    }
-
-    const user = await this.userModel.findOne<User>({ email });
-
-    if (user) {
-      throw new UserIsExistsException(email);
-    }
 
     const hashPassword = await hashedPassword(password);
 
     return this.userModel.create({
       ...rest,
-      email,
       password: hashPassword,
     })
       .then((u) => u.populate('roles'));
@@ -92,7 +82,8 @@ export class UserService {
 
     const user = await this.userModel
       .findByIdAndUpdate(id, copyUser, { new: true })
-      .populate('roles');
+      .populate('roles')
+      .select('-password');
 
     if (!user) {
       throw new UserNotFoundException();

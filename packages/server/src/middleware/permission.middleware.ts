@@ -7,12 +7,14 @@ export const permissionMiddleware = (roles: RoleName[] = []) => (
   _res: Response,
   next: NextFunction,
 ) => {
+  const superAdminRole: RoleName = 'super-admin';
   const userRoles = req.user?.roles ?? [];
 
-  const hasPermission = userRoles.some((role) => roles.includes(role));
-  const hasSuperAdminRole = userRoles.includes('superadmin');
+  const hasPermission = userRoles.some(
+    ({ name }) => roles.includes(name) || name === superAdminRole,
+  );
 
-  if (!hasPermission || !hasSuperAdminRole) {
+  if (!hasPermission) {
     throw new NoPermissionException();
   }
 

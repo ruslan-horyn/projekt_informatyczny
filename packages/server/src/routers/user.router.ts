@@ -8,7 +8,7 @@ import { UserService } from '../services/user.service';
 
 const userRouter = () => {
   const router = Router();
-  const path = '/user';
+  const path = '/users';
 
   const userService = new UserService();
   const userController = new UserController(userService);

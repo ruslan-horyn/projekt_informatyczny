@@ -21,16 +21,4 @@ export class RoleController {
     const role = await this.roleService.getRoleById(id);
     res.json(role);
   };
-
-  create = async (req: UserRequest<unknown, Role>, res: Response<Role>): Promise<void> => {
-    const { name } = req.body;
-    const role = await this.roleService.createRole(name);
-    res.json(role);
-  };
-
-  delete = async (req: UserRequest<IdType>, res: Response): Promise<void> => {
-    const { id } = req.params;
-    await this.roleService.deleteRole(id);
-    res.sendStatus(200);
-  };
 }

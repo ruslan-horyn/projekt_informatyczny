@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 import { Address, TransformType } from '../types';
+import { transformDoc } from './helper/transaform';
 
 export const AddressSchema = new Schema<Address>({
   country: { type: String, required: true },
@@ -15,12 +16,9 @@ export const AddressSchema = new Schema<Address>({
   timestamps: true,
   toJSON: {
     transform(_doc, ret: TransformType) {
-      ret.id = ret._id;
-      delete ret._id;
-      delete ret.__v;
+      transformDoc(_doc, ret);
     },
   },
-  id: true,
 });
 
 export const AddressModel = model<Address>('Address', AddressSchema);

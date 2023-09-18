@@ -1,14 +1,11 @@
 import colors from 'colors';
-import dotenv from 'dotenv';
+import 'reflect-metadata';
 import App from './src/app';
+import { config } from './src/config/configEnv';
 import connectDB from './src/config/connectDB';
 import routers from './src/routers';
-import { validateEnv } from './src/utils/validateEnv';
 
-dotenv.config();
-validateEnv();
-
-const port = process.env.PORT ? +process.env.PORT : 5000;
+const { port } = config;
 
 const app = new App(routers, port);
 

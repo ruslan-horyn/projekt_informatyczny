@@ -1,19 +1,19 @@
 import { model, Schema } from 'mongoose';
 
 import { Role, TransformType } from '../types';
+import { transformDoc } from './helper/transaform';
 
 const RoleSchema = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
 }, {
   timestamps: true,
   toJSON: {
     transform(_doc, ret: TransformType) {
-      ret.id = ret._id;
-      delete ret._id;
-      delete ret.__v;
+      transformDoc(_doc, ret);
     },
   },
 });

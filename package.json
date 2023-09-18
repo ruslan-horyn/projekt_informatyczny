@@ -1,7 +1,7 @@
 {
-  "name": "projekt_informatyczny",
+  "name": "employee_dashboard",
   "version": "1.0.0",
-  "description": "projekt_informatyczny monorepo",
+  "description": "employee_dashboard monorepo",
   "scripts": {
     "clean": "npx lerna clean -y",
     "boot": "npx lerna bootstrap",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ruslan-horyn/projekt_informatyczny.git"
+    "url": "https://github.com/ruslan-horyn/employee_dashboard.git"
   },
   "keywords": [],
   "author": "Ruslan Horyn",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ruslan-horyn/projekt_informatyczny/issues"
+    "url": "https://github.com/ruslan-horyn/employee_dashboard/issues"
   },
-  "homepage": "https://github.com/ruslan-horyn/projekt_informatyczny#readme",
+  "homepage": "https://github.com/ruslan-horyn/employee_dashboard#readme",
   "devDependencies": {
     "lerna": "^6.0.1"
   },

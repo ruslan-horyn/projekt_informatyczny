@@ -1,10 +1,12 @@
+import { Address } from './address.type';
+import { FilterKeys } from './helpers.type';
+
 export interface Job {
   id: string;
   name: string;
   description: string;
   phone: string;
+  address: Address;
 }
 
-export interface JobWithAddress extends Job {
-  address: string;
-}
+export type JobPayload = FilterKeys<Job, 'id'> & { address: string[] };

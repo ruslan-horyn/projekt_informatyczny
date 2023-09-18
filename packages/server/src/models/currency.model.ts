@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 import { Currency, TransformType } from '../types';
+import { transformDoc } from './helper/transaform';
 
 export const CurrencySchema = new Schema({
   name: { type: String, required: true },
@@ -8,9 +9,7 @@ export const CurrencySchema = new Schema({
   timestamps: true,
   toJSON: {
     transform(_doc, ret: TransformType) {
-      ret.id = ret._id;
-      delete ret._id;
-      delete ret.__v;
+      transformDoc(_doc, ret);
     },
   },
 });

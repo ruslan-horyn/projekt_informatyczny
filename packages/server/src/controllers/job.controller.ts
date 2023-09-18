@@ -3,7 +3,7 @@ import { JobService } from '../services/job.service';
 import {
   IdType,
   Job,
-  JobWithAddress,
+  JobPayload,
   UserRequest,
 } from '../types';
 
@@ -23,13 +23,12 @@ export class JobController {
     res.json(job);
   };
 
-  create = async (req: UserRequest<IdType, JobWithAddress>, res: Response<Job>): Promise<void> => {
-    const { address: idAddress, ...job } = req.body;
-    const newJob = await this.jobService.create(job, idAddress);
+  create = async (req: UserRequest<IdType, JobPayload>, res: Response<Job>): Promise<void> => {
+    const newJob = await this.jobService.create(req.body);
     res.json(newJob);
   };
 
-  update = async (req: UserRequest<IdType, Job>, res: Response<Job>): Promise<void> => {
+  update = async (req: UserRequest<IdType, JobPayload>, res: Response<Job>): Promise<void> => {
     const { id } = req.params;
     const newJob = await this.jobService.update(id, req.body);
     res.json(newJob);

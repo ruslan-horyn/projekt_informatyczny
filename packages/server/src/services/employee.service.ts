@@ -12,11 +12,13 @@ export class EmployeeService {
   private readonly employeeModel: Model<Employee> = EmployeeModel;
 
   async getAll(): Promise<Employee[]> {
-    return this.employeeModel.find();
+    return this.employeeModel.find()
+      .populate('address');
   }
 
   async getById(id: string): Promise<Employee> {
-    const employee = await this.employeeModel.findById(id);
+    const employee = await this.employeeModel.findById(id)
+      .populate('address');
 
     if (!employee) {
       throw new EmployeeNotFoundException();
@@ -30,7 +32,8 @@ export class EmployeeService {
       email, ...rest
     } = data;
 
-    const employee = await this.employeeModel.findOne({ email });
+    const employee = await this.employeeModel.findOne({ email })
+      .populate('address');
 
     if (employee) {
       throw new EmployeeIsExistsException(email);

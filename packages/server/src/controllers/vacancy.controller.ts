@@ -5,7 +5,7 @@ import { JobService } from '../services/job.service';
 import { VacancyService } from '../services/vacancy.service';
 import { VacancyTypeService } from '../services/vacancyType.service';
 import {
-  IdType, UserRequest, Vacancy,
+  IdType, UserRequest, Vacancy, VacancyPayload,
 } from '../types';
 
 interface VacancyControllerServices {
@@ -18,7 +18,7 @@ interface VacancyControllerServices {
 export class VacancyController {
   constructor(
     private readonly _services: VacancyControllerServices,
-  ) {}
+  ) { }
 
   getAll = async (_req: UserRequest, res: Response<Vacancy[]>): Promise<void> => {
     const vacancy = await this._services.vacancy.getAll();
@@ -31,21 +31,21 @@ export class VacancyController {
     res.json(vacancy);
   };
 
-  create = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>): Promise<void> => {
+  create = async (req: UserRequest<IdType, VacancyPayload>, res: Response<Vacancy>): Promise<void> => {
     const { body } = req;
 
     await Promise.all([
-      this._services.job.getById(body.jobId),
-      this._services.employee.getById(body.employeeId),
-      this._services.vacancyType.getById(body.typeId),
-      this._services.currency.getById(body.currencyId),
+      this._services.job.getById(body.job),
+      this._services.employee.getById(body.employee),
+      this._services.vacancyType.getById(body.type),
+      this._services.currency.getById(body.currency),
     ]);
 
     const vacancy = await this._services.vacancy.create(body);
     res.json(vacancy);
   };
 
-  update = async (req: UserRequest<IdType, Vacancy>, res: Response<Vacancy>): Promise<void> => {
+  update = async (req: UserRequest<IdType, VacancyPayload>, res: Response<Vacancy>): Promise<void> => {
     const { id } = req.params;
     const { body } = req;
     const vacancy = await this._services.vacancy.update(id, body);

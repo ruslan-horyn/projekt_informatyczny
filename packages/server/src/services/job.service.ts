@@ -5,7 +5,7 @@ import {
   JobNotFind,
 } from '../exceptions';
 import { JobModel } from '../models';
-import { Job } from '../types';
+import { Job, JobPayload } from '../types';
 
 export class JobService {
   private readonly jobModel: Model<Job> = JobModel;
@@ -30,8 +30,8 @@ export class JobService {
     return job;
   }
 
-  async create(job: Job, idAddress: string): Promise<Job> {
-    return (await this.jobModel.create({ ...job, address: idAddress })).populate('address');
+  async create(payload: JobPayload): Promise<Job> {
+    return (await this.jobModel.create(payload)).populate('address');
   }
 
   async delete(id: string): Promise<void> {
@@ -46,12 +46,12 @@ export class JobService {
     }
   }
 
-  async update(id: string, job: Job): Promise<Job> {
+  async update(id: string, payload: Partial<JobPayload>): Promise<Job> {
     if (!isValidObjectId(id)) {
       throw new JobIdNotFindException(id);
     }
 
-    const newOne = await this.jobModel.findByIdAndUpdate(id, job, { new: true })
+    const newOne = await this.jobModel.findByIdAndUpdate(id, payload, { new: true })
       .populate('address');
 
     if (!newOne) {

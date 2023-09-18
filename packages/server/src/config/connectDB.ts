@@ -1,14 +1,17 @@
 import colors from 'colors';
 import mongoose from 'mongoose';
+import { config } from './configEnv';
 
 const connectDB = async () => {
-  const host = process.env.MONGO_HOST || 'localhost';
-  const port = process.env.MONGO_PORT || '27017';
-  const dbName = process.env.MONGO_DB || 'app';
-  const url = `mongodb://${host}:${port}/${dbName}`;
-  // connect to mongoDB database with options
+  const {
+    name, user, pass, url,
+  } = config.db;
 
-  const connect = await mongoose.connect(url);
+  const mongoUrl = `${url}/${name}`;
+
+  mongoose.set('strictQuery', false);
+
+  const connect = await mongoose.connect(mongoUrl, { user, pass });
   // eslint-disable-next-line no-console
   console.log(colors.cyan('MongoDB Connected: %s'), connect.connection.host);
 };

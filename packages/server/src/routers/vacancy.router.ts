@@ -12,7 +12,7 @@ import { VacancyTypeService } from '../services/vacancyType.service';
 
 const vacancyRouter = () => {
   const router = Router();
-  const path = '/vacancy';
+  const path = '/vacancies';
 
   const vacancyService = new VacancyService();
   const jobService = new JobService();

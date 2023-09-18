@@ -29,6 +29,7 @@ module.exports = {
     'src/**/*.spec.*',
     'src/**/*.d.ts',
     'src/**/*.stories.*',
+    'jest.config.js',
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -60,7 +61,7 @@ module.exports = {
       'warn',
       {
         selector: 'default',
-        format: ['camelCase', 'PascalCase'],
+        format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
         leadingUnderscore: 'allow',
       },
     ],
@@ -131,5 +132,21 @@ module.exports = {
         "code": 120
       }
     ],
-  }
+  },
+  overrides: [
+    {
+      files: ['*.model.ts'],
+      rules: {
+        'no-param-reassign': "off",
+      }
+    },
+    {
+      files: ['*.test.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': "off",
+        '@typescript-eslint/no-unsafe-return': "off",
+        '@typescript-eslint/unbound-method': "off",
+      }
+    }
+  ],
 }

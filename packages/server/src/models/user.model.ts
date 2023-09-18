@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 import { TransformType, User } from '../types';
+import { transformDoc } from './helper/transaform';
 
 export const UserSchema = new Schema<User>({
   firstName: { type: String, required: true },
@@ -16,11 +17,9 @@ export const UserSchema = new Schema<User>({
   timestamps: true,
   toJSON: {
     transform(_doc, ret: TransformType) {
-      ret.id = ret._id;
-      delete ret._id;
-      delete ret.__v;
+      transformDoc(_doc, ret);
     },
   },
 });
 
-export const UserModel = model<User>('User', UserSchema);
+export const UserModel = model('User', UserSchema);

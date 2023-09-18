@@ -1,29 +1,21 @@
 import { Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { RoleController } from '../controllers/role.controller';
-import { RoleDto } from '../dto';
-import { authMiddleware, validationMiddleware } from '../middleware';
+import { authMiddleware } from '../middleware';
 import { permissionMiddleware } from '../middleware/permission.middleware';
 import { RoleService } from '../services/role.service';
 
 const roleRouter = () => {
   const router = Router();
-  const path = '/role';
+  const path = '/roles';
 
   const roleService = new RoleService();
   const roleController = new RoleController(roleService);
 
   router
-    .all(`${path}`, authMiddleware, permissionMiddleware())
-    .all(`${path}/*`, authMiddleware, permissionMiddleware())
+    .all(`${path}`, authMiddleware, permissionMiddleware(['admin']))
     .get(`${path}`, expressAsyncHandler(roleController.getAll))
-    .get(`${path}/:id`, expressAsyncHandler(roleController.getById))
-    .delete(`${path}/:id`, expressAsyncHandler(roleController.delete))
-    .post(
-      path,
-      validationMiddleware(RoleDto),
-      expressAsyncHandler(roleController.create),
-    );
+    .get(`${path}/:id`, expressAsyncHandler(roleController.getById));
 
   return router;
 };

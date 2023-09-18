@@ -8,7 +8,7 @@ import { VacancyTypeService } from '../services/vacancyType.service';
 
 const vacancyTypeRouter = () => {
   const router = Router();
-  const path = '/vacancy';
+  const path = '/vacancy-types';
 
   const vacancyTypeService = new VacancyTypeService();
   const vacancyTypeController = new VacancyTypeController(vacancyTypeService);

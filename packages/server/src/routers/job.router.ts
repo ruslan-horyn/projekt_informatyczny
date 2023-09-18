@@ -8,7 +8,7 @@ import { JobService } from '../services/job.service';
 
 const jobRouter = () => {
   const router = Router();
-  const path = '/job';
+  const path = '/jobs';
 
   const jobService = new JobService();
   const jobController = new JobController(jobService);

@@ -2,7 +2,7 @@ import { isValidObjectId, Model } from 'mongoose';
 
 import {
   RoleIdNotFindException,
-  RoleNotFound
+  RoleNotFound,
 } from '../exceptions';
 import { RoleModel } from '../models';
 import { Role } from '../types';
@@ -26,21 +26,5 @@ export class RoleService {
     }
 
     return role;
-  }
-
-  async createRole(name: string): Promise<Role> {
-    return this.model.create({ name });
-  }
-
-  async deleteRole(id: string): Promise<void> {
-    if (!isValidObjectId(id)) {
-      throw new RoleIdNotFindException(id);
-    }
-
-    const role = await this.model.findByIdAndDelete(id);
-
-    if (!role) {
-      throw new RoleNotFound();
-    }
   }
 }

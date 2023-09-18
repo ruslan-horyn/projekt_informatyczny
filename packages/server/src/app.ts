@@ -28,7 +28,7 @@ class App {
 
   private initializeRouters(routers: Router[]) {
     routers.forEach((router) => {
-      this.app.use(router);
+      this.app.use('/api', router);
     });
   }
 
